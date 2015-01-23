@@ -9,7 +9,7 @@ var kernel = require('../../index');
 var should = require('should');
 
 describe('Init without settings.yml', function () {
-    it('should throw error', function () {
+    it('should throw error without settings.yml', function () {
         (function () {
             kernel.init(__dirname);
         }).should.throw();

@@ -9,7 +9,7 @@ var kernel = require('../../index');
 var should = require('should');
 
 describe('Init with minimal customized settings', function () {
-    it('should contains PORT number', function (done) {
+    it('should contains PORT number from production.yml', function (done) {
         (function () {
             delete kernel.logger;
             delete kernel.errorLogger;

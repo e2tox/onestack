@@ -9,7 +9,7 @@ var kernel = require('../../index');
 var should = require('should');
 
 describe('Init with full customized settings', function () {
-    it('should contains PORT number', function (done) {
+    it('should contains PORT number from full customized settings', function (done) {
         (function () {
             kernel.init(__dirname);
             kernel.settings.should.have.property('PORT', 11023);
