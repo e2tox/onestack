@@ -1,9 +1,8 @@
 {
-  "name": "OneStack-Kernel",
+  "name": "onestack",
   "description": "OneStack Enterprise Server Platform",
   "author": "Ling",
   "version": "1.0.0",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git@git.erealm.cn:onestack/kernel.git"

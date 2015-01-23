@@ -1,6 +1,5 @@
 OneStack Enterprise Server Platform
 ===================================
-Kernel Project
 
 ## Technologies
 nodejs/iojs, JavaScript, YAML, JSON
