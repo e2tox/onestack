@@ -1,8 +1,6 @@
 OneStack Enterprise Server Platform
 ===================================
-
 Kernel Project
---------------
 
 ## Technologies
 nodejs/iojs, JavaScript, YAML, JSON
@@ -30,3 +28,11 @@ $ grunt
 ```
 
 You should view the test result from the console
+
+## Running Test with Coverage
+
+```
+$ grunt coverage
+```
+
+You should view the test coverage from `test/coverage.html`
