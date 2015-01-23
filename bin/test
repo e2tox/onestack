@@ -7,13 +7,12 @@ var path = require('path');
 // set production environment
 process.env.NODE_ENV = 'production';
 
-process.bin = process.title = 'onestack - scaffold';
+process.bin = process.title = 'onestack';
 
 // set workdir as server dir
 process.chdir(path.join(__dirname, '../'));
 
-// boot the server
-require('../server.js');
+// run grunt tests
 
 
 
