@@ -1,0 +1,16 @@
+---
+# application info
+TITLE: 'Only Default'
+VERSION: '1.0'
+DESCRIPTION: 'OneStack Enterprise Server'
+KEYWORDS: 'api rest json'
+URL: 'http://sandbox.onestack.io/scaffold/v1/'
+HOST: '0.0.0.0'
+
+# PaaS will always set the PORT environment variable
+PORT:
+
+# dirs
+DATA_DIR: '/data'  # absolute path
+LOG_DIR: './logs'  # relative path to server.js
+
