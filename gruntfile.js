@@ -94,7 +94,7 @@ module.exports = function (grunt) {
                 src: ['test'], // a folder works nicely
                 options: {
                     reporter: 'mocha-teamcity-reporter',
-                    coverage: true,
+                    coverage: false,
                     check: {
                         lines: 80,
                         statements: 80,
