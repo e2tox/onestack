@@ -12,7 +12,7 @@
     "npm": ">=1.4.x"
   },
   "scripts": {
-    "test": "node bin/test"
+    "test": "node_modules/grunt-cli/bin/grunt coverage"
   },
   "dependencies": {
     "lodash": "^2.4.1",

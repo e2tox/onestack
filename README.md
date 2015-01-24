@@ -1,6 +1,8 @@
 OneStack Enterprise Server Platform
 ===================================
 
+[![Build Status](https://travis-ci.org/erealm/OneStack.svg)](https://travis-ci.org/erealm/OneStack)
+
 ## Technologies
 nodejs/iojs, JavaScript, YAML, JSON
 
