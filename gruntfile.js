@@ -5,7 +5,7 @@ module.exports = function (grunt) {
     // Unified Watch Object
     var watchFiles = {
         serverJS: ['lib/*.js', 'index.js'],
-        serverTests: ['test/*/*_spec.js'],
+        serverTests: ['test/*_spec.js'],
         ignores: ['node_modules/**', '.git/**', '.idea/', '.cache/', '.tmp/']
     };
 
@@ -21,7 +21,7 @@ module.exports = function (grunt) {
          * JSLint
          * ===========================================
          */
-        // region JSLint, jscs, jsbeautifier, nodemon, watch, node-inspector, concurrent definition
+        // region JSLint, jscs, jsbeautifier, nodemon, watch definition
         jshint: {
             options: {
                 reporter: require('jshint-stylish')
@@ -76,45 +76,37 @@ module.exports = function (grunt) {
         watch: {
             test: {
                 files: allFiles,
-                tasks: ['newer:jshint:test', 'env:test', 'mochacov:test']
+                tasks: ['newer:jshint:test', 'mocha_istanbul:test']
             }
         },
         // endregion
 
-        /**
-         * Tests
-         */
-        mochacov: {
-            options: {
-                coverage: true,
-                require: ['should'],
-                reporter: 'html-cov',
-                output: 'test/coverage.html',
-                files: watchFiles.serverTests
-            },
+        mocha_istanbul: {
             test: {
+                src: ['test'], // a folder works nicely
                 options: {
-                    coverage: false,
-                    output: false,
-                    reporter:'nyan'
+                    reporter: 'spec',
+                    coverage: false
+                    //root: './lib'
                 }
             },
-            spec: {
+            coverage: {
+                src: ['test'], // a folder works nicely
                 options: {
-                    coverage: false,
-                    output: false,
-                    reporter: 'spec'
+                    reporter: 'mocha-teamcity-reporter',
+                    coverage: true,
+                    check: {
+                        lines: 80,
+                        statements: 80,
+                        branches: 80,
+                        functions: 80
+                    },
+                    //root: './lib', // define where the cover task should consider the root of libraries that are covered by tests
+                    reportFormats: ['teamcity', 'html', 'lcovonly']
                 }
-            },
-            teamcity: {
-                options: {
-                    coverage: false,
-                    output: false,
-                    reporter: 'mocha-teamcity-reporter'
-                }
-            },
-            cov: watchFiles.serverTests
+            }
         }
+
     });
 
     // Load grunt tasks automatically
@@ -123,6 +115,15 @@ module.exports = function (grunt) {
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
 
+    grunt.event.on('coverage', function(lcov, done){
+        require('coveralls').handleInput(lcov, function(err){
+            if (err) {
+                return done(err);
+            }
+            done();
+        });
+    });
+
     // Default task(s).
     grunt.registerTask('default', ['env:test', 'watch:test']);
 
@@ -130,8 +131,6 @@ module.exports = function (grunt) {
     grunt.registerTask('lint', ['jshint', 'jscs', 'jsbeautifier']);
 
     // We don't need setup a test server here because we use injection to the server instance directly
-    grunt.registerTask('coverage', ['mochacov:spec', 'mochacov:cov']);
-    grunt.registerTask('teamcity', ['mochacov:teamcity', 'mochacov:cov']);
-
+    grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
 
 };

@@ -5,7 +5,7 @@
  */
 
 // Init the configuration module
-var kernel = require('../../index');
+var kernel = require('../index');
 var should = require('should');
 
 describe('Init with default settings', function () {
@@ -14,7 +14,7 @@ describe('Init with default settings', function () {
             // reset kernel settings
             kernel.settings = {};
             // initialize application with configuration folder
-            kernel.init(__dirname);
+            kernel.init(__dirname + '/only_default');
         }).should.throw();
     });
 });

@@ -5,7 +5,7 @@
  */
 
 // Init the configuration module
-var kernel = require('../../index');
+var kernel = require('../index');
 var should = require('should');
 
 describe('Init without anything', function () {
