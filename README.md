@@ -2,7 +2,7 @@ OneStack Enterprise Server Platform
 ===================================
 
 [![Build Status](https://travis-ci.org/e2tox/OneStack.svg)](https://travis-ci.org/e2tox/OneStack)
-[![Coverage Status](https://coveralls.io/repos/e2tox/openstack/badge.svg)](https://coveralls.io/r/e2tox/openstack)
+[![Coverage Status](https://coveralls.io/repos/e2tox/openstack/badge.svg?branch=master)](https://coveralls.io/r/e2tox/openstack?branch=master)
 
 ## Technologies
 nodejs/iojs, JavaScript, YAML, JSON
