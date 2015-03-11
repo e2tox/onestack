@@ -4,7 +4,7 @@ OneStack Enterprise Server Platform
 [![Build Status](https://img.shields.io/travis/e2tox/OneStack.svg?style=flat)](https://travis-ci.org/e2tox/OneStack)
 [![Coverage Status](https://img.shields.io/coveralls/e2tox/openstack/master.svg?style=flat)](https://coveralls.io/r/e2tox/openstack?branch=master)
 
-OneStack is an platform for developing enterprise applications.
+OneStack is a platform for developing enterprise applications.
 
 ## Technologies
 nodejs/iojs, JavaScript, YAML, JSON
