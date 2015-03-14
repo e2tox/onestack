@@ -29,6 +29,33 @@ module.exports = {
     /**
      * Settings placeholder
      */
-    settings: {}
+    settings: {},
+
+    /**
+     * Placeholders
+     */
+    log: function() {
+        throw Error('Please call init() first');
+    },
+
+    info: function() {
+        throw Error('Please call init() first');
+    },
+
+    debug: function() {
+        throw Error('Please call init() first');
+    },
+
+    silly: function() {
+        throw Error('Please call init() first');
+    },
+
+    warn: function() {
+        throw Error('Please call init() first');
+    },
+
+    error: function() {
+        throw Error('Please call init() first');
+    }
 
 };
