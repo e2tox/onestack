@@ -4,7 +4,7 @@ node_js:
   - "0.10"
 env:
   - export COVERALLS_SERVICE_NAME=travis-ci
-  - export COVERALLS_REPO_TOKEN=QhyX5ahDMn1iQj3Jtx1Btx9sM9GY1wsSv
+  - export COVERALLS_REPO_TOKEN=nUDjKfxszsxoM9CCpdUoOFG8dPq7imrAJ
 before_install: npm install -g grunt-cli
 install: npm install
 script: npm run-script test-on-travis
