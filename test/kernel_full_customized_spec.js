@@ -33,4 +33,18 @@ describe('Init with full customized settings', function () {
         kernel.error('this is error');
         kernel.warn('this is warn');
     });
+    it('should able to get settings', function () {
+        kernel.init(__dirname + '/full_customized');
+        kernel.get('PORT');
+    });
+    it('should throw error', function () {
+        (function () {
+            kernel.init(__dirname + '/full_customized');
+            kernel.get('HERO_NAME');
+        }).should.throw();
+    });
+    it('should return true', function () {
+        kernel.init(__dirname + '/full_customized');
+        kernel.has('PORT');
+    });
 });

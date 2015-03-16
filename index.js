@@ -31,6 +31,19 @@ module.exports = {
      */
     settings: {},
 
+
+    'get': function(key) {
+        var value = this.settings[key];
+        if (typeof value === 'undefined') {
+            throw new Error('Missing required configuration setting: `' + key + '`');
+        }
+        return value;
+    },
+
+    'has': function(key) {
+        return typeof this.settings[key] !== 'undefined';
+    },
+
     /**
      * Placeholders
      */
