@@ -2,7 +2,7 @@
   "name": "onestack",
   "description": "OneStack Enterprise Server Platform",
   "author": "Ling",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "repository": {
     "type": "git",
     "url": "git@github.com:e2tox/onestack.git"
