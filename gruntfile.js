@@ -125,7 +125,7 @@ module.exports = function (grunt) {
     });
 
     // Default task(s).
-    grunt.registerTask('default', ['env:test', 'mocha_istanbul:test', 'watch:test']);
+    grunt.registerTask('default', ['mocha_istanbul:test', 'watch:test']);
 
     // Lint task(s).
     grunt.registerTask('lint', ['jshint', 'jscs', 'jsbeautifier']);

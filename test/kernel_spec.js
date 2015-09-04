@@ -15,7 +15,7 @@ describe('Index', function () {
             kernel.settings = {};
             // initialize application with configuration folder
             kernel.init(__dirname + '/full_customized');
-            kernel.welcome();
+            kernel.welcome('tests');
         }).should.not.throw();
     });
 });
