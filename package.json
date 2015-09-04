@@ -2,7 +2,7 @@
   "name": "onestack",
   "description": "OneStack Enterprise Server Platform",
   "author": "Ling",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "repository": {
     "type": "git",
     "url": "git@github.com:e2tox/onestack.git"
@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "require-yaml": "0.0.1",
-    "winston": ">=1.0.0"
+    "winston": "^1.0.0"
   },
   "peerDependencies": {
-    "winston": ">=1.0.0"
+    "winston": "^1.0.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.4",
