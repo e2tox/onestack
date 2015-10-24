@@ -1,42 +1,111 @@
-OneStack Enterprise Server Platform
-===================================
+OneStack Enterprise Service Platform
+====================================
 
 [![Build Status](https://img.shields.io/travis/e2tox/OneStack.svg?style=flat)](https://travis-ci.org/e2tox/OneStack)
 [![Coverage Status](https://img.shields.io/coveralls/e2tox/OneStack/master.svg?style=flat)](https://coveralls.io/r/e2tox/OneStack?branch=master)
 
-OneStack is a platform for developing enterprise applications.
+### Projects
 
-## Technologies
-nodejs/iojs, JavaScript, YAML, JSON
+#### OneStack 
 
-## Prerequisites
-```
-$ sudo npm install -g grunt-cli
-```
-
-## Quick Install
-```
-$ npm install
-```
-
-This command does a few things:
-* First it will install the dependencies needed for the application to run.
-* If you're running in a development environment, it will then also install development dependencies needed for testing and running your application.
-* Finally, when the install process is over, npm will initiate a bower install command to install all the front-end modules needed for the application.
-
-## Before Development
-After the installation process is over, you'll be able to run tests using Grunt, just run grunt default task:
+YAML based configuration management and Winston based logging system - ALL IN PLACE!!! 
 
 ```
-$ grunt
+npm install onestack
 ```
 
-You should view the test result from the console
+URL: [https://github.com/e2tox/onestack](https://github.com/e2tox/onestack)
 
-## Running Test with Coverage
+
+#### OneStack Service Platform
+
+
+HAPI backed API server which comes with awesome swagger UI.
+```
+npm install onestack-service
+```
+
+URL: [https://github.com/e2tox/onestack-service](https://github.com/e2tox/onestack-service)
+
+### Create Your Project
+
+Clone this [starter project](https://github.com/e2tox/onestack-service-project) and you will able to build your next API backend within few clicks!!!
+
+#### 1. Configuration:  YAML
+
+conf/settings.yaml
+
+``` YAML
+---
+# application info
+ID: ONE
+TITLE: OneStack Enterprise Service Platform
+
+# PaaS will always set the PORT environment variable
+PORT: 11020
+
+# Explorer will display the tagged services under this url
+EXPLORE_SERVICE_BASE: /api/v1
+
+# relative path to HOME_DIR
+LOG_DIR: ./logs
 
 ```
-$ grunt coverage
+
+#### 2. API Route:
+server/routes/engine.server.route.js
+
+``` javascript
+module.exports = function (server) {
+    server.route({
+        method: 'POST',
+        path: '/api/v1/engine',
+        handler: function (request, reply) {
+            reply('hi, there');
+        },
+        config: {
+            description: 'Start engine',
+            tags: ['Business Process Engine']
+        }
+    });
+};
 ```
 
-You should view the test coverage from `test/coverage.html`
+#### 3. Run Your API Backend
+
+``` javascript
+var app         = require('onestack');
+var Server      = require('onestack-service');
+
+var instance    = new Server(app);
+
+instance.init(__dirname);
+instance.start();
+```
+
+#### 4. Explorer Your API
+http://localhost:11020/explorer
+
+![API Explorer](https://raw.githubusercontent.com/e2tox/images/master/screen.png)
+
+#### 5. Read Settings
+
+``` javascript
+var app = require('onestack');
+
+if (app.has('PORT')) {
+    console.log(app.get('PORT'));
+}
+```
+
+#### 6. Write Log
+
+``` javascript
+var app = require('onestack');
+
+app.debug('this is info');
+app.verbose('this is info');
+app.info('this is info');
+app.warn('this is info');
+app.error('this is info');
+```
