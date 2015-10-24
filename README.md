@@ -83,12 +83,15 @@ instance.init(__dirname);
 instance.start();
 ```
 
-#### 4. Explorer Your API
+#### 4. Useful console output for logging and analysis
+![Console Output](https://raw.githubusercontent.com/e2tox/images/master/onestack.png)
+
+#### 5. Explorer Your API
 http://localhost:11020/explorer
 
-![API Explorer](https://raw.githubusercontent.com/e2tox/images/master/screen.png)
+![API Explorer](https://raw.githubusercontent.com/e2tox/images/master/onestack-service.png)
 
-#### 5. Read Settings
+#### Extra: Check and Read Settings
 
 ``` javascript
 var app = require('onestack');
@@ -98,7 +101,7 @@ if (app.has('PORT')) {
 }
 ```
 
-#### 6. Write Log
+#### Extra: Write Log
 
 ``` javascript
 var app = require('onestack');
