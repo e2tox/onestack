@@ -13,9 +13,16 @@ module.exports = {
      * @param {string} configPath
      */
     init: function (configPath) {
-        return require('./lib').configure(configPath, this);
+        return this.configure(configPath);
     },
 
+    /**
+     * Configure application from the path
+     * @param configPath
+     */
+    configure: function(configPath) {
+        return require('./lib').configure(configPath, this);
+    },
 
     /**
      * Display welcome information for the server
