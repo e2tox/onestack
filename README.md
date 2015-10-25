@@ -1,7 +1,7 @@
 OneStack Enterprise Service Platform
 ====================================
 
-[![Build Status](https://img.shields.io/travis/e2tox/OneStack.svg?style=flat)](https://travis-ci.org/e2tox/OneStack)
+[![Build Status](https://img.shields.io/travis/e2tox/onestack.svg?style=flat)](https://travis-ci.org/e2tox/OneStack)
 [![Coverage Status](https://img.shields.io/coveralls/e2tox/OneStack/master.svg?style=flat)](https://coveralls.io/r/e2tox/OneStack?branch=master)
 
 ### Long Term Support Schedule
