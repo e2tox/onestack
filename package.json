@@ -3,6 +3,7 @@
   "description": "OneStack Enterprise Server Platform",
   "author": "Ling",
   "version": "2.0.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@gitlab.com:onestack/onestack.git"
