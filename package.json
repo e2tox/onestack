@@ -9,7 +9,7 @@
     "url": "git@gitlab.com:onestack/onestack.git"
   },
   "engines": {
-    "node": ">=4.2.1",
+    "node": ">=4.2.0",
     "npm": ">=2.14.7"
   },
   "scripts": {
