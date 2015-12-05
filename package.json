@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@gitlab.com:onestack/onestack.git"
+    "url": "git@github.com:e2tox/onestack.git"
   },
   "engines": {
     "node": ">=4.2.0",
