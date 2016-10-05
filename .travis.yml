@@ -6,8 +6,7 @@ notifications:
     on_failure: change
 
 script:
-  - npm run build
-  - npm run lint
+  - npm install
   - npm install $TYPESCRIPT --force
   - npm run test-on-travis
 
