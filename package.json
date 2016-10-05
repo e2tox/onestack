@@ -2,50 +2,55 @@
   "name": "onestack",
   "description": "OneStack Enterprise Server Platform",
   "author": "Ling",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:e2tox/onestack.git"
   },
   "engines": {
-    "node": ">=4.2.0",
-    "npm": ">=2.14.7"
+    "node": ">=4.0.0",
+    "npm": ">=2.0.0"
   },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
-    "test": "node_modules/grunt-cli/bin/grunt coverage",
-    "test-on-travis": "./node_modules/.bin/istanbul cover --report lcovonly ./node_modules/.bin/_mocha && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "start": "NODE_ENV=test node_modules/.bin/nodemon --config task/testmon.json && exit 0",
+    "test": "npm run lint && npm run build && npm run test:coverage",
+    "cov": "npm run test:coverage",
+    "test:unit": "node_modules/.bin/ts-node task/jasmine.ts",
+    "test:coverage": "node_modules/.bin/ts-node node_modules/.bin/istanbul cover --config=task/istanbul.yml node_modules/.bin/jasmine JASMINE_CONFIG_PATH=task/jasmine.full.json",
+    "lint": "standard --pretty",
+    "build": "npm run build:clean && npm run build:tsc",
+    "build:clean": "rm -rf ./lib",
+    "build:tsc": "node_modules/.bin/tsc -p tsconfig.release.json",
+    "build:webpack": "node_modules/.bin/webpack --config task/webpack.config.ts",
+    "test-on-travis": "npm run lint && npm run test:coverage",
+    "test-on-teamcity": "exit 1"
   },
   "dependencies": {
-    "require-yaml": "0.0.1",
-    "winston": "^2.2.0",
-    "winston-daily-rotate-file": "^1.2.0"
+    "reflect-metadata": "latest",
+    "require-yaml": "latest",
+    "ws": "latest"
   },
   "devDependencies": {
-    "coveralls": "^2.11.4",
-    "glob": "^7.0.5",
-    "grunt": "^1.0.1",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-env": "^0.4.2",
-    "grunt-jsbeautifier": "^0.2.7",
-    "grunt-jscs": "^3.0.1",
-    "grunt-mocha-istanbul": "^5.0.1",
-    "grunt-newer": "^1.1.0",
-    "istanbul": "^0.4.4",
-    "jshint-stylish": "^2.2.0",
-    "load-grunt-tasks": "^3.5.0",
-    "mocha": "^2.1.0",
-    "mocha-teamcity-reporter": "1.0.2",
-    "should": "^10.0.0"
-  },
-  "config": {
-    "blanket": {
-      "data-cover-only": [
-        "lib"
-      ],
-      "data-cover-never": "node_modules"
-    }
+    "@types/jasmine": "latest",
+    "@types/node": "latest",
+    "@types/webpack": "latest",
+    "@types/ws": "latest",
+    "istanbul": "next",
+    "jasmine": "latest",
+    "jasmine-spec-reporter": "latest",
+    "nodemon": "latest",
+    "ts-loader": "latest",
+    "ts-node": "latest",
+    "typescript": "latest",
+    "typescript-standard": "latest",
+    "webpack": "beta"
   }
 }
