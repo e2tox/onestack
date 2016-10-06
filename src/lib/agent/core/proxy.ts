@@ -1,7 +1,7 @@
 import { Reflection } from './reflection';
-import { IActivatable } from '../domain';
 import { Interceptor } from './interceptor';
 import { IsUndefined } from './utils';
+import { IActivatable } from './invocation';
 
 export class ProxyInterceptor<T> implements ProxyHandler<T> {
   

@@ -1,6 +1,2 @@
-export * from './core/attribute'
-export * from './core/interceptor'
-export * from './core/invocation'
-export * from './agent'
-export * from './domain'
-export * from './core/utils'
+export { agent } from './agent'
+export { Domain } from './domain'

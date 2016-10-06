@@ -1,10 +1,7 @@
 import { ProxyInterceptor } from './core/proxy'
 import { Reflection } from './core/reflection';
 import { AgentAttribute } from './agent';
-
-export interface IActivatable<T> {
-  new <T>(): T
-}
+import { IActivatable } from './core/invocation';
 
 export class Domain {
   
