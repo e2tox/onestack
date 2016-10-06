@@ -36,7 +36,10 @@ export class AgentAttribute implements IAttribute, IInterceptor {
   }
   
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-    return invocation.invoke(parameters);
+    console.log('before createGetterInterceptor');
+    const instance = invocation.invoke(parameters);
+    console.log('after createGetterInterceptor');
+    return instance;
   }
   
 }

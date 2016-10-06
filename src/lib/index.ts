@@ -1,6 +1,6 @@
 import { Kernel } from './kernel'
 
-// create a unique, global symbol name
+// createGetterInterceptor a unique, global symbol name
 // -----------------------------------
 const sblKernel = Symbol.for('onestack.kernel');
 

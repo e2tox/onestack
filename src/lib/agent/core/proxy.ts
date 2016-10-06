@@ -1,5 +1,5 @@
 import { Reflection } from './reflection';
-import { Interceptor } from './interceptor';
+import { InterceptorFactory } from './interceptor';
 import { IsUndefined } from './utils';
 import { IActivatable } from './invocation';
 
@@ -32,8 +32,8 @@ export class ProxyInterceptor<T> implements ProxyHandler<T> {
       return Reflect.get(target, propertyKey);
     }
   
-    // create invocation of interceptor chain
-    const invocation = Interceptor.create(customAttributes, target, propertyKey, receiver);
+    // createGetterInterceptor invocation of interceptor chain
+    const invocation = InterceptorFactory.createGetterInterceptor(customAttributes, target, propertyKey, receiver);
   
     if (IsUndefined(reflection.descriptor)) {
       return invocation.invoke([]);
@@ -49,7 +49,7 @@ export class ProxyInterceptor<T> implements ProxyHandler<T> {
       }
     }
     
-    throw new TypeError('Unknown Interceptor type');
+    throw new TypeError('Unknown InterceptorFactory type');
   }
 
   set(target: T, propertyKey: PropertyKey, value: any, receiver: any): boolean {
