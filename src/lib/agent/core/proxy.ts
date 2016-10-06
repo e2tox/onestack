@@ -1,68 +1,25 @@
 import { Reflection } from './reflection';
 import { InterceptorFactory } from './interceptor';
-import { IsUndefined } from './utils';
 import { IActivatable } from './invocation';
+import { GetterInterceptor } from './interceptors/getter';
+import { SetterInterceptor } from './interceptors/setter';
 
-export class ProxyInterceptor<T> implements ProxyHandler<T> {
+export class ProxyInterceptor {
   
-  public static create<T>(target: IActivatable<T>, argumentsList: ArrayLike<any>): T {
-    const instance = Reflect.construct(target, argumentsList);
-    return new Proxy<T>(instance, new ProxyInterceptor<T>())
-  }
-
-  get(target: T, propertyKey: PropertyKey, receiver: any): any {
+  public static construct<T>(target: IActivatable<T>, argumentsList: ArrayLike<any>): T {
     
-    // ignore private fields/method which start with '_'
-    if (propertyKey[0] === '_') {
-      // console.log('proxy ignore private: ', prop);
-      return Reflect.get(target, propertyKey);
-    }
-  
-    // ignore array index
-    if (typeof propertyKey === 'number') {
-      // console.log('proxy ignore number: ', prop);
-      return Reflect.get(target, propertyKey);
-    }
-  
-    const reflection = Reflection.getInstance(target, propertyKey);
-    const customAttributes = reflection.getAttributes();
+    // Construct interceptor start
+    const customAttributes = Reflection.getAttributes(target);
+    const constructor = InterceptorFactory.createConstructInterceptor(customAttributes, target);
+    const instance = constructor.invoke(argumentsList);
+    // Construct interceptor finish
     
-    // ignore non-agent methods
-    if (!customAttributes.length) {
-      return Reflect.get(target, propertyKey);
-    }
-  
-    // createGetterInterceptor invocation of interceptor chain
-    const invocation = InterceptorFactory.createGetterInterceptor(customAttributes, target, propertyKey, receiver);
-  
-    if (IsUndefined(reflection.descriptor)) {
-      return invocation.invoke([]);
-    }
-    else {
-      if (!IsUndefined(reflection.descriptor.get)) {
-        return invocation.invoke([]);
-      }
-      else if (!IsUndefined(reflection.descriptor.value)) {
-        return (...args): any => {
-          return invocation.invoke(args);
-        };
-      }
-    }
+    const proxy: ProxyHandler<T> = {
+      get: GetterInterceptor,
+      set: SetterInterceptor
+    };
     
-    throw new TypeError('Unknown InterceptorFactory type');
-  }
-
-  set(target: T, propertyKey: PropertyKey, value: any, receiver: any): boolean {
-    
-    // ignore private fields/method which start with '_'
-    if (propertyKey[0] === '_') {
-      // console.log('proxy ignore private: ', prop);
-      return Reflect.set(target, propertyKey, value, receiver);
-    }
-    
-    // TODO: run interceptor before set the value
-    console.log('called set', propertyKey, value);
-    return Reflect.set(target, propertyKey, value, receiver);
+    return new Proxy<T>(instance, proxy)
   }
   
 }

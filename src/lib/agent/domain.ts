@@ -28,7 +28,7 @@ export class Domain {
     //   console.log(`Create and register agent '${agentAttr.identifier}'`)
     // }
     
-    return ProxyInterceptor.create<T>(type, args);
+    return ProxyInterceptor.construct<T>(type, args);
     
   }
 }

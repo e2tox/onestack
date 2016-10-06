@@ -33,9 +33,8 @@ class OutputAttribute implements IAttribute, IInterceptor {
   }
   
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-    const result = invocation.invoke(parameters);
-    debug(`target.${this._key}='${Reflect.get(invocation.target, this._key)}'`);
-    return result;
+    debug(`target.${this._key}=${JSON.stringify(parameters[0])}`)
+    return invocation.invoke(parameters);
   }
   
 }

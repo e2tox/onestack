@@ -1,6 +1,7 @@
 import { Directory } from './utils/directory'
 import { Domain, agent } from './agent'
 import { success, prerequisite } from './agent.state';
+import { output } from './agent.state/output';
 
 /**
  * naming an agent using @gent
@@ -8,6 +9,7 @@ import { success, prerequisite } from './agent.state';
 @agent('OneStack')
 export class Kernel {
   
+  @output('_root')
   private _root: Directory;
   
   public static getInstance(): Kernel {

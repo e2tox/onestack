@@ -14,3 +14,7 @@ Required to add `--experimentalDecorators` option to `tsc` or update `tsconfig.j
   }
 }
 ```
+
+### Known Issue
+
+We can not intercept the method call inside class constructor

@@ -1,4 +1,6 @@
 import { IsFunction } from './utils';
+import { IAttribute } from './attribute';
+import { InvocationChainFactory } from './chain';
 export interface IActivatable<T> {
   new (): T
 }
@@ -7,7 +9,6 @@ export interface IInvocation {
   target: any;
   invoke(parameters: ArrayLike<any>): any;
 }
-
 
 export class GetterInvocation implements IInvocation {
   
