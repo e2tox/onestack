@@ -16,7 +16,7 @@ export interface IAttribute {
   getType(): string
   
   /**
-   * Get interceptor for this invocation
+   * Get interceptor for this _invocation
    */
   getInterceptor(): IInterceptor
   

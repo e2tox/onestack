@@ -1,74 +1,43 @@
 import { IInvocation } from './invocation';
 import { IAttribute } from './attribute';
-import { Reflection } from './reflection';
-import { IsUndefined, IsFunction } from './utils';
+import { IsFunction } from './utils';
 
 export interface IInterceptor {
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any;
 }
 
-export enum InterceptorType {
-  FIELD = 1,
-  METHOD
-}
-
 export class Interceptor {
   
-  public static createProxyInterceptor(target: any,
-                                       propertyKey: PropertyKey,
-                                       receiver: any,
-                                       attributes: Array<IAttribute>,
-                                       reflection: Reflection) {
+  public static create(attributes: Array<IAttribute>,
+                       target: any,
+                       propertyKey: PropertyKey,
+                       receiver: any) {
     
-    const interceptor = new ProxyInterceptor(target, propertyKey, receiver);
+    const chain = new InvocationChain(target, propertyKey, receiver);
     
-    if (IsUndefined(reflection.descriptor)) {
-      interceptor.type = InterceptorType.FIELD;
-    }
-    else {
-      if (!IsUndefined(reflection.descriptor.get)) {
-        interceptor.type = InterceptorType.FIELD;
-      }
-      else if (!IsUndefined(reflection.descriptor.value)) {
-        interceptor.type = InterceptorType.METHOD;
-      }
-    }
-    
-    // install each interceptor from attribute
+    // make invocation chain of interceptors
     attributes.forEach(function (attribute) {
-      interceptor.use(attribute.getInterceptor());
+      chain.use(attribute.getInterceptor());
     });
     
-    return interceptor.entry();
+    return chain.entry();
   }
-  
 }
 
-class ProxyInterceptor {
+class InvocationChain {
   
-  invocation: IInvocation;
-  type: InterceptorType;
+  private _invocation: IInvocation;
   
   constructor(target: any, propertyKey: PropertyKey, receiver: any) {
-    this.invocation = new OriginInvocation(target, propertyKey, receiver);
+    this._invocation = new OriginInvocation(target, propertyKey, receiver);
   }
   
-  public use(interceptor: IInterceptor): void {
-    this.invocation = new InceptionInvocation(this.invocation, interceptor);
+  use(interceptor: IInterceptor): void {
+    this._invocation = new InceptionInvocation(this._invocation, interceptor);
   }
   
-  public entry(): any {
-    if (this.type === InterceptorType.METHOD) {
-      return (...args): any => {
-        return this.invocation.invoke(args);
-      };
-    }
-    else if (this.type === InterceptorType.FIELD) {
-      return this.invocation.invoke([]);
-    }
-    else {
-      throw new TypeError('Not Supported Interceptor type');
-    }
+  entry(): IInvocation {
+    return this._invocation;
   }
   
 }
@@ -76,7 +45,6 @@ class ProxyInterceptor {
 class OriginInvocation implements IInvocation {
   
   constructor(private _target: any, private _propertyKey: PropertyKey, private _receiver: any) {
-    
   }
   
   get target(): any {
@@ -84,15 +52,13 @@ class OriginInvocation implements IInvocation {
   }
   
   invoke(parameters: ArrayLike<any>): any {
-    
-    const propertyValueOrFunction = Reflect.get(this._target, this._propertyKey);
-    
-    if (IsFunction(propertyValueOrFunction)) {
+    const result = Reflect.get(this._target, this._propertyKey);
+    if (IsFunction(result)) {
       // the function call inside this function will be intercepted
-      return Reflect.apply(propertyValueOrFunction, this._receiver, parameters);
+      return Reflect.apply(result, this._receiver, parameters);
     }
     else {
-      return propertyValueOrFunction;
+      return result;
     }
   }
   

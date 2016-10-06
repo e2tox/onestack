@@ -1,9 +1,9 @@
-import { AgentProxy } from './core/proxy'
+import { ProxyInterceptor } from './core/proxy'
 import { Reflection } from './core/reflection';
 import { AgentAttribute } from './agent';
 
 export interface IActivatable<T> {
-  new(): T
+  new <T>(): T
 }
 
 export class Domain {
@@ -16,15 +16,13 @@ export class Domain {
    */
   public static createAgentFromType<T>(type: IActivatable<T>, ...args): T {
     
-    let attrs = Reflection.getAttributes(type).filter(function(attr) {
-      return attr.getType() === AgentAttribute.type
-    });
+    let attributes = Reflection.getAttributes(type).filter(attribute => attribute instanceof AgentAttribute);
     
-    if (!attrs.length) {
+    if (!attributes.length) {
       throw new TypeError('Agent Decoration Not Found')
     }
   
-    if (attrs.length > 1) {
+    if (attributes.length > 1) {
       throw new TypeError('Not Support Multiple Agent Decoration')
     }
     
@@ -33,9 +31,7 @@ export class Domain {
     //   console.log(`Create and register agent '${agentAttr.identifier}'`)
     // }
     
-    const instance = Reflect.construct(type, args);
-    return new Proxy<T>(instance, AgentProxy.getInstance<T>(type))
+    return ProxyInterceptor.create<T>(type, args);
     
   }
-  
 }

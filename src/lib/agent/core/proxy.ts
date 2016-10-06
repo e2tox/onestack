@@ -1,11 +1,13 @@
 import { Reflection } from './reflection';
 import { IActivatable } from '../domain';
 import { Interceptor } from './interceptor';
+import { IsUndefined } from './utils';
 
-export class AgentProxy<T> implements ProxyHandler<T> {
+export class ProxyInterceptor<T> implements ProxyHandler<T> {
   
-  public static getInstance<T>(type: IActivatable<T>): AgentProxy<T> {
-    return new AgentProxy<T>();
+  public static create<T>(target: IActivatable<T>, argumentsList: ArrayLike<any>): T {
+    const instance = Reflect.construct(target, argumentsList);
+    return new Proxy<T>(instance, new ProxyInterceptor<T>())
   }
 
   get(target: T, propertyKey: PropertyKey, receiver: any): any {
@@ -23,20 +25,44 @@ export class AgentProxy<T> implements ProxyHandler<T> {
     }
   
     const reflection = Reflection.getInstance(target, propertyKey);
-    const customAttributes = reflection ? reflection.getAttributes() : [];
+    const customAttributes = reflection.getAttributes();
     
     // ignore non-agent methods
     if (!customAttributes.length) {
       return Reflect.get(target, propertyKey);
     }
+  
+    // create invocation of interceptor chain
+    const invocation = Interceptor.create(customAttributes, target, propertyKey, receiver);
+  
+    if (IsUndefined(reflection.descriptor)) {
+      return invocation.invoke([]);
+    }
+    else {
+      if (!IsUndefined(reflection.descriptor.get)) {
+        return invocation.invoke([]);
+      }
+      else if (!IsUndefined(reflection.descriptor.value)) {
+        return (...args): any => {
+          return invocation.invoke(args);
+        };
+      }
+    }
     
-    return Interceptor.createProxyInterceptor(target, propertyKey, receiver, customAttributes, reflection);
-    
+    throw new TypeError('Unknown Interceptor type');
   }
 
-  set(target: T, p: PropertyKey, value: any, receiver: any): boolean {
+  set(target: T, propertyKey: PropertyKey, value: any, receiver: any): boolean {
+    
+    // ignore private fields/method which start with '_'
+    if (propertyKey[0] === '_') {
+      // console.log('proxy ignore private: ', prop);
+      return Reflect.set(target, propertyKey, value, receiver);
+    }
+    
     // TODO: run interceptor before set the value
-    return Reflect.set(target, p, value, receiver);
+    console.log('called set', propertyKey, value);
+    return Reflect.set(target, propertyKey, value, receiver);
   }
   
 }
