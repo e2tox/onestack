@@ -1,4 +1,4 @@
-import { IAttribute, Attribute, IInterceptor, IInvocation } from '../agent';
+import { IAttribute, IInterceptor, IInvocation, decorateClassMembers } from '../agent/core';
 import { debug } from '../logger';
 
 /**
@@ -6,22 +6,24 @@ import { debug } from '../logger';
  * @param key
  * @returns {PropertyDecorator|MethodDecorator}
  */
-export function output(key: string): PropertyDecorator | MethodDecorator {
-  const attr = new OutputAttribute(key);
-  return attr.generateClassMemberDecorator();
+export function output(key: string) {
+  return decorateClassMembers(new OutputAttribute(key));
 }
 
 /**
  * OutputAttribute
  */
-class OutputAttribute extends Attribute implements IAttribute, IInterceptor {
+class OutputAttribute implements IAttribute, IInterceptor {
   
   static type: string = 'agent.framework.output';
   
   constructor(private _key: string) {
-    super();
   }
-
+  
+  beforeDecorate(target: Object|Function, targetKey?: string|symbol, descriptor?: PropertyDescriptor): boolean {
+    return true;
+  }
+  
   getType(): string {
     return OutputAttribute.type
   }

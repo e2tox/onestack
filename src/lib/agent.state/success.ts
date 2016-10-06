@@ -1,4 +1,4 @@
-import { Attribute, IInterceptor, IInvocation } from '../agent';
+import { IAttribute, IInterceptor, IInvocation, decorateClassMembers } from '../agent/core';
 
 /**
  * Define a prerequisite
@@ -7,19 +7,18 @@ import { Attribute, IInterceptor, IInvocation } from '../agent';
  * @returns {(target:any, propertyKey:string, descriptor:PropertyDescriptor)=>undefined}
  */
 export function success(key: string, value: any) {
-  const attribute = new SuccessAttribute(key, value);
-  return attribute.generateClassMemberDecorator();
+  return decorateClassMembers(new SuccessAttribute(key, value));
 }
 
 /**
  * PrerequisiteAttribute
  */
-class SuccessAttribute extends Attribute implements IInterceptor {
+class SuccessAttribute implements IAttribute, IInterceptor {
+
   
   static type: string = 'agent.framework.success';
   
   constructor(private _key: string, private _value: any) {
-    super()
   }
 
   get key(): string {
@@ -28,6 +27,10 @@ class SuccessAttribute extends Attribute implements IInterceptor {
   
   get value(): boolean {
     return this._value
+  }
+  
+  beforeDecorate(target: Object|Function, targetKey?: string|symbol, descriptor?: PropertyDescriptor): boolean {
+    return true;
   }
   
   getType(): string {

@@ -1,4 +1,4 @@
-import { AgentProxy } from './proxy'
+import { AgentProxy } from './core/proxy'
 import { Reflection } from './core/reflection';
 import { AgentAttribute } from './agent';
 

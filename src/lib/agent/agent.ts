@@ -1,6 +1,4 @@
-import { Attribute } from './core/attribute';
-import { IInterceptor } from './core/interceptor';
-import { IInvocation } from './core/invocation';
+import { decorateClass, IAttribute, IInterceptor, IInvocation } from './core';
 
 /**
  * Define an agent
@@ -8,23 +6,25 @@ import { IInvocation } from './core/invocation';
  * @returns {(target:any, propertyKey:string, descriptor:PropertyDescriptor)=>undefined}
  */
 export function agent(identifier: string) {
-  let attr = Reflect.construct(AgentAttribute, [identifier]) as Attribute;
-  return attr.generateClassDecorator();
+  return decorateClass(new AgentAttribute(identifier));
 }
 
 /**
  * AgentAttribute
  */
-export class AgentAttribute extends Attribute implements IInterceptor {
+export class AgentAttribute implements IAttribute, IInterceptor {
   
   static type: string = 'agent.framework.agent';
   
   constructor(private _identifier: string) {
-    super()
   }
   
   get identifier(): string {
     return this._identifier
+  }
+  
+  beforeDecorate(target: Object|Function, targetKey?: string|symbol, descriptor?: PropertyDescriptor): boolean {
+    return true;
   }
   
   getType(): string {

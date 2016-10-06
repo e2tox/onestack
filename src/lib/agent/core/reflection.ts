@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { IAttribute } from './attribute';
-import { IsObject, IsUndefined, ToPropertyKey } from '../utils';
+import { IsObject, IsUndefined, ToPropertyKey } from './utils';
 
 // metadata key for ES7 Reflect.metadata
 const REFLECTION_METADATA_KEY = Symbol.for('agent.framework.reflection');
@@ -73,6 +73,22 @@ export class Reflection {
   public static getAttributes(target: Object | Function, targetKey?: any): Array<IAttribute> {
     const reflection = Reflection.getInstance(target, targetKey);
     return reflection ? reflection.getAttributes() : [];
+  }
+  
+  /**
+   * Add an attribute to the type
+   * @param attribute
+   * @param target
+   * @param targetKey
+   * @param descriptor
+   */
+  public static addAttribute(attribute: IAttribute,
+                             target: Object | Function,
+                             targetKey?: string | symbol,
+                             descriptor?: PropertyDescriptor) {
+    
+    const reflection = Reflection.getOwnInstance(target, targetKey, descriptor);
+    reflection.addAttribute(attribute);
   }
   
   /**

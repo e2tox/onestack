@@ -1,5 +1,5 @@
-import { Reflection } from './core/reflection';
-import { IActivatable } from './domain';
+import { Reflection } from './reflection';
+import { IActivatable } from '../domain';
 import { Interceptor } from './interceptor';
 
 export class AgentProxy<T> implements ProxyHandler<T> {

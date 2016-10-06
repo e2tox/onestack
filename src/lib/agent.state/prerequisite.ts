@@ -1,5 +1,6 @@
-import { Attribute, IInterceptor, IInvocation } from '../agent';
-import { IsString, IsEqual } from '../agent/utils';
+import { IAttribute, IInterceptor, IInvocation, decorateClassMembers } from '../agent/core';
+import { IsEqual, IsString } from '../agent/core/utils';
+
 
 /**
  * Define a prerequisite
@@ -9,19 +10,17 @@ import { IsString, IsEqual } from '../agent/utils';
  * @returns {(target:any, propertyKey:string, descriptor:PropertyDescriptor)=>undefined}
  */
 export function prerequisite(key: string, value: any, message: string|Error) {
-  const attribute = new PrerequisiteAttribute(key, value, message);
-  return attribute.generateClassMemberDecorator();
+  return decorateClassMembers(new PrerequisiteAttribute(key, value, message));
 }
 
 /**
  * PrerequisiteAttribute
  */
-class PrerequisiteAttribute extends Attribute implements IInterceptor {
+class PrerequisiteAttribute implements IAttribute, IInterceptor {
   
   static type: string = 'agent.framework.prerequisite';
   
   constructor(private _key: string, private _value: any, private _message: string|Error) {
-    super()
   }
   
   get key(): string {
@@ -34,6 +33,10 @@ class PrerequisiteAttribute extends Attribute implements IInterceptor {
   
   get message(): string | Error {
     return this._message
+  }
+  
+  beforeDecorate(target: Object|Function, targetKey?: string|symbol, descriptor?: PropertyDescriptor): boolean {
+    return true;
   }
   
   getType(): string {
