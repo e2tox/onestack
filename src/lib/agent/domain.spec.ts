@@ -15,6 +15,14 @@ class Bar {
   }
 }
 
+@agent('foo')
+@agent('foobar')
+class FooBar {
+  hello():string {
+    return 'Bar.hello()';
+  }
+}
+
 describe('Domain', () => {
   
   describe('# createAgentFromType', () => {
@@ -28,6 +36,12 @@ describe('Domain', () => {
       expect(() => {
         Domain.createAgentFromType(Bar)
       }).toThrow(new TypeError('Agent Decoration Not Found'))
+    });
+    
+    it('not allow to create agent', () => {
+      expect(() => {
+        Domain.createAgentFromType(FooBar)
+      }).toThrow(new TypeError('Not Support Multiple Agent Decoration'))
     });
   
   });
