@@ -5,10 +5,16 @@ import { debug } from '../../../logger';
 export function SetterInterceptor<T>(target: T, propertyKey: PropertyKey, value: any, receiver: any): boolean {
   
   // ignore private fields/method which start with '_'
-  // if (propertyKey[0] === '_') {
-  //   // console.log('proxy ignore private: ', propertyKey);
-  //   return Reflect.set(target, propertyKey, value, receiver);
-  // }
+  if (propertyKey[0] === '_') {
+    // console.log('proxy ignore private: ', prop);
+    return Reflect.set(target, propertyKey, value, receiver);
+  }
+  
+  // ignore array index
+  if (typeof propertyKey === 'number') {
+    // console.log('proxy ignore number: ', prop);
+    return Reflect.set(target, propertyKey, value, receiver);
+  }
   
   const customAttributes = Reflection.getAttributes(target, propertyKey);
   

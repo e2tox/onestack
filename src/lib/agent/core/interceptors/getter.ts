@@ -35,8 +35,8 @@ export function GetterInterceptor<T>(target: T, propertyKey: PropertyKey, receiv
       return invocation.invoke([]);
     }
     else if (!IsUndefined(reflection.descriptor.value)) {
-      return (...args): any => {
-        return invocation.invoke(args);
+      return function () {
+        return invocation.invoke(arguments);
       };
     }
   }

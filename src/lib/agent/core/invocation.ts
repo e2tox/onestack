@@ -1,14 +1,18 @@
 import { IsFunction } from './utils';
 
 export interface IActivatable<T> {
-  new(...args: any[]): T
+  new(parameters?: ArrayLike<any>): T
+}
+
+export interface IInvoke {
+  (parameters: ArrayLike<any>): any
 }
 
 export interface IInvocation {
-  target: any;
+  target?: any;
+  method?: IInvoke;
   invoke(parameters: ArrayLike<any>): any;
 }
-
 
 export class GetterInvocation implements IInvocation {
   
@@ -47,7 +51,6 @@ export class SetterInvocation implements IInvocation {
   
 }
 
-
 export class ConstructInvocation implements IInvocation {
   
   constructor(private _target: any, private _receiver: any) {
@@ -59,23 +62,6 @@ export class ConstructInvocation implements IInvocation {
   
   invoke(parameters: ArrayLike<any>): any {
     return Reflect.construct(this._target, parameters, this._receiver);
-  }
-  
-}
-
-export class FunctionInvocation implements IInvocation {
-  
-  constructor(private _target: Function) {
-  }
-  
-  get target(): any {
-    // console.log('ask target', this._target);
-    return this._target;
-  }
-  
-  invoke(receiver: any, ...args): any {
-    // console.log('invoke invocation', receiver, args);
-    return Reflect.apply(this._target, receiver, args);
   }
   
 }

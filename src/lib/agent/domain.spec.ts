@@ -71,11 +71,11 @@ describe('Domain', () => {
     
   });
   
-  // describe('# registerClass', () => {
+  // describe('# upgradeClass', () => {
   //
   //   it('able to register class to default domain', () => {
   //
-  //     const FooAgent = Domain.registerClass(Foo);
+  //     const FooAgent = Domain.upgradeClass(Foo);
   //
   //     const foo = new FooAgent();
   //     expect(foo).toBeDefined();

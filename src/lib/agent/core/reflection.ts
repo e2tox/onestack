@@ -13,6 +13,9 @@ export class Reflection {
   private _attributes: Array<IAttribute>;
   
   constructor(private _target: Object, private _targetKey?: string | symbol, private _descriptor?: PropertyDescriptor) {
+    if (IsUndefined(_descriptor) && !IsUndefined(_targetKey)) {
+      this._descriptor = Object.getOwnPropertyDescriptor(_target, _targetKey);
+    }
     this._attributes = [];
   }
   
@@ -20,12 +23,10 @@ export class Reflection {
    * Get Reflection object
    * @param target
    * @param targetKey
-   * @param descriptor
    * @returns {Reflection}
    */
   public static getInstance(target: Object | Function,
-                            targetKey?: string | symbol,
-                            descriptor?: PropertyDescriptor): Reflection {
+                            targetKey?: string | symbol): Reflection {
     if (!IsObject(target)) {
       throw new TypeError();
     }
@@ -34,7 +35,7 @@ export class Reflection {
     }
     let reflection = Reflect.getMetadata(REFLECTION_METADATA_KEY, target, targetKey) as Reflection;
     if (!reflection) {
-      reflection = new Reflection(target, targetKey, descriptor);
+      reflection = new Reflection(target, targetKey);
       Reflect.metadata(REFLECTION_METADATA_KEY, reflection)(target, targetKey);
     }
     return reflection;
@@ -44,7 +45,6 @@ export class Reflection {
    * Get Reflection object from itself or parent
    * @param target
    * @param targetKey
-   * @param descriptor
    * @returns {Reflection}
    */
   public static getOwnInstance(target: Object | Function,
@@ -64,46 +64,27 @@ export class Reflection {
     return reflection;
   }
   
-  /**
-   * Get attributes from itself or parent
-   * @param target
-   * @param targetKey
-   * @returns {any}
-   */
   public static getAttributes(target: Object | Function, targetKey?: any): Array<IAttribute> {
-    const reflection = Reflection.getInstance(target, targetKey);
-    return reflection ? reflection.getAttributes() : [];
+    return Reflection.getInstance(target, targetKey).getAttributes();
   }
   
-  /**
-   * Add an attribute to the type
-   * @param attribute
-   * @param target
-   * @param targetKey
-   * @param descriptor
-   */
+  public static hasAttributes(target: Object | Function, targetKey?: any): boolean {
+    return Reflection.getInstance(target, targetKey).hasAttributes();
+  }
+  
   public static addAttribute(attribute: IAttribute,
                              target: Object | Function,
-                             targetKey?: string | symbol,
-                             descriptor?: PropertyDescriptor) {
+                             targetKey?: string | symbol, descriptor?: PropertyDescriptor) {
     
-    const reflection = Reflection.getOwnInstance(target, targetKey, descriptor);
-    reflection.addAttribute(attribute);
-  }
-  
-  /**
-   * Get attributes
-   * @param target
-   * @param targetKey
-   * @returns {any}
-   */
-  public static getOwnAttributes(target: Object | Function, targetKey?: any): Array<IAttribute> {
-    const reflection = Reflection.getOwnInstance(target, targetKey);
-    return reflection ? reflection.getAttributes() : [];
+    Reflection.getOwnInstance(target, targetKey).addAttribute(attribute);
   }
   
   getAttributes(): Array<IAttribute> {
     return this._attributes;
+  }
+  
+  hasAttributes(): boolean {
+    return this._attributes.length > 0
   }
   
   addAttribute(attr: IAttribute): void {

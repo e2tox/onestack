@@ -15,18 +15,18 @@ export class Domain {
    * @returns {Domain}
    */
   public static get instance(): Domain {
-    
+
     // check if the global object has this symbol
     // add it if it does not have the symbol, yet
     // ------------------------------------------
     const globalSymbols = Object.getOwnPropertySymbols(global);
-  
+
     if (globalSymbols.indexOf(nsDomain) === -1) {
       global[nsDomain] = new Domain();
     }
-  
+
     return global[nsDomain] as Domain;
-    
+
   }
   
   /**
@@ -61,7 +61,9 @@ export class Domain {
    * @param type
    */
   public static registerClass<T>(type: IActivatable<T>): boolean {
-    return ProxyInterceptor.registerClass(type);
+    
+    return ProxyInterceptor.upgradeClass(type) !== null;
+    
   }
   
 }

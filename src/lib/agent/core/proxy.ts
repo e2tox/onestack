@@ -1,18 +1,26 @@
 import { Reflection } from './reflection';
 import { InterceptorFactory } from './interceptor';
 import { IActivatable } from './invocation';
-import { IsUndefined } from './utils';
+import { IsUndefined, IsString } from './utils';
 import { GetterInterceptor } from './interceptors/getter';
 import { SetterInterceptor } from './interceptors/setter';
+import { ConstructInterceptor } from './interceptors/construct';
 
 export class ProxyInterceptor {
   
-  public static construct<T>(target: IActivatable<T>, argumentsList: ArrayLike<any>): T {
+  /**
+   * Construct a new object using Proxy
+   * @param type
+   * @param argumentsList
+   * @returns {T}
+   */
+  public static construct<T>(type: IActivatable<T>, argumentsList: ArrayLike<any>): T {
     
     // Construct interceptor start
-    const customAttributes = Reflection.getAttributes(target);
-    const constructor = InterceptorFactory.createConstructInterceptor(customAttributes, target, target);
-    const instance = constructor.invoke(argumentsList);
+    const typeProxyHandler: ProxyHandler<IActivatable<T>> = {
+      construct: ConstructInterceptor
+    };
+    const upgraded = new Proxy<IActivatable<T>>(type, typeProxyHandler);
     // Construct interceptor finish
     
     const proxy: ProxyHandler<T> = {
@@ -20,55 +28,69 @@ export class ProxyInterceptor {
       set: SetterInterceptor
     };
     
-    return new Proxy<T>(instance, proxy)
-  
-    // const classProxyHandler: ProxyHandler<IActivatable<T>> = {
-    //   construct: ConstructInterceptor
-    // };
-    // return new Proxy<IActivatable<T>>(type, classProxyHandler);
+    const instance = Reflect.construct(upgraded, argumentsList);
+    
+    return new Proxy<T>(instance, proxy);
   }
   
-  public static registerClass<T>(type: IActivatable<T>): boolean {
+  /**
+   * Upgrade instance to agent
+   * @param instance
+   * @returns {T}
+   */
+  public static upgradeInstance<T>(instance: T): T {
+    const proxy: ProxyHandler<T> = {
+      get: GetterInterceptor,
+      set: SetterInterceptor
+    };
+    return new Proxy<T>(instance, proxy);
+  }
+  
+  /**
+   * Upgrade class to agent
+   * @param type
+   * @returns {any}
+   */
+  public static upgradeClass<T>(type: IActivatable<T>): IActivatable<T> {
+    
+    const typeProxyHandler: ProxyHandler<IActivatable<T>> = {
+      construct: ConstructInterceptor
+    };
+    const upgraded = new Proxy<IActivatable<T>>(type, typeProxyHandler);
     
     // get the prototype of function
-    const members = Object.getOwnPropertyNames(type.prototype);
+    const keys = Reflect.ownKeys(type.prototype);
 
-    // replace the prototype method if found attributes
-    for (const id in members) {
-      
-      const propertyKey = members[id];
+    const propertyDescriptors = keys
+      .filter(key => key[0] !== '_')
+      .filter(key => IsString(key))
+      .filter(key => Reflection.hasAttributes(type.prototype, key))
+      .map(key => {
   
-      // ignore private fields
-      if (propertyKey[0] === '_') {
-        continue;
-      }
-      
-      const descriptor = Object.getOwnPropertyDescriptor(type.prototype, propertyKey);
-      const attributes = Reflection.getOwnAttributes(type.prototype, propertyKey);
-
-      if (!attributes.length) {
-        continue;
-      }
-  
-      if (!IsUndefined(descriptor.value)) {
-        const chain = InterceptorFactory.createPrototypeInterceptor(attributes);
-        descriptor.value = chain.entry(descriptor.value);
-      }
-      else {
+        console.log('working at ', key);
+        const descriptor = Object.getOwnPropertyDescriptor(type.prototype, key);
+        const attributes = Reflection.getAttributes(type.prototype, key);
+        
+        if (!IsUndefined(descriptor.value)) {
+          descriptor.value = InterceptorFactory.createFunctionInterceptor(attributes, descriptor.value);
+        }
         if (!IsUndefined(descriptor.get)) {
-          const chain = InterceptorFactory.createPrototypeInterceptor(attributes);
-          descriptor.get = chain.entry(descriptor.get);
+          descriptor.get = InterceptorFactory.createFunctionInterceptor(attributes, descriptor.get);
         }
         if (!IsUndefined(descriptor.set)) {
-          const chain = InterceptorFactory.createPrototypeInterceptor(attributes);
-          descriptor.set = chain.entry(descriptor.set);
+          descriptor.set = InterceptorFactory.createFunctionInterceptor(attributes, descriptor.set);
         }
-      }
-      
-      Object.defineProperty(type.prototype, propertyKey, descriptor);
-
-    }
+        
+        return {key, descriptor};
+        
+      }).reduce((map, item) => {
+        map[item.key] = item.descriptor;
+        return map;
+      }, {});
     
-    return true;
+    Object.defineProperties(upgraded.prototype, propertyDescriptors);
+    
+    return upgraded;
   }
+  
 }

@@ -48,7 +48,9 @@ class PrerequisiteAttribute implements IAttribute, IInterceptor {
   }
   
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
+  
     const actualValue = Reflect.get(invocation.target, this.key);
+    
     // console.log(`actual: ${actualValue}  expect: ${this.value}`);
     if (!IsEqual(actualValue, this.value)) {
       if (IsString(this.message)) {
@@ -59,6 +61,7 @@ class PrerequisiteAttribute implements IAttribute, IInterceptor {
       }
     }
     return invocation.invoke(parameters);
+    
   }
   
 }

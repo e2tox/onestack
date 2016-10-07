@@ -4,26 +4,19 @@ import { Domain } from './agent/domain';
 
 describe('Kernel', () => {
   
-  let kernel: Kernel;
   let testRoot: string;
   
   beforeAll(() => {
     Domain.registerClass(Kernel);
-  });
-  
-  beforeEach(() => {
-    //kernel = Kernel.getInstance();
-    kernel = new Kernel();
-    
-    // console.log('create kernel', kernel['initialized']);
-    
     // resolve from process.cwd()
     testRoot = path.resolve('test');
   });
   
+
   describe('# not allow to', () => {
     
     it('call kernel.init() twice', () => {
+      const kernel = new Kernel();
       kernel.init(testRoot);
       expect(() => {
         kernel.init(testRoot);
@@ -32,6 +25,7 @@ describe('Kernel', () => {
     });
     
     it('call kernel.init(\'/not-exist-directory\')', () => {
+      const kernel = new Kernel();
       expect(() => {
         kernel.init('/not-exist-directory');
         console.error('[YOU SHOULD NEVER SEE THIS]');
@@ -39,6 +33,7 @@ describe('Kernel', () => {
     });
     
     it('call kernel.root before kernel.init()', () => {
+      const kernel = new Kernel();
       expect(() => {
         const root = kernel.root;
         console.error('[YOU SHOULD NEVER SEE THIS]', root);
@@ -46,6 +41,7 @@ describe('Kernel', () => {
     });
     
     it('call kernel.resolve(path) before kernel.init()', () => {
+      const kernel = new Kernel();
       expect(() => {
         const resolved = kernel.resolve('test');
         console.error('[YOU SHOULD NEVER SEE THIS]', resolved);
@@ -53,6 +49,7 @@ describe('Kernel', () => {
     });
     
     it('call kernel.resolve() before kernel.init()', () => {
+      const kernel = new Kernel();
       expect(() => {
         const resolved = kernel.resolve();
         console.error('[YOU SHOULD NEVER SEE THIS]', resolved);
@@ -64,22 +61,26 @@ describe('Kernel', () => {
   describe('# should able to', () => {
     
     it('call init()', () => {
+      const kernel = new Kernel();
       kernel.init(testRoot)
     });
     
     it('call kernel.root after init()', () => {
+      const kernel = new Kernel();
       kernel.init(testRoot);
       expect(kernel.root).toBeDefined();
       expect(kernel.root.path).toBe(testRoot);
     });
     
     it('call kernel.resolve() after init()', () => {
+      const kernel = new Kernel();
       kernel.init(testRoot);
       expect(kernel.resolve()).toBeDefined();
       expect(kernel.resolve().path).toBe(testRoot);
     });
     
     it('call kernel.resolve(\'conf\') after init()', () => {
+      const kernel = new Kernel();
       kernel.init(testRoot);
       expect(kernel.resolve('conf')).toBeDefined();
       expect(kernel.resolve('conf').path).toBe(path.join(testRoot, 'conf'));

@@ -18,14 +18,14 @@ describe('Directory', () => {
   describe('# not allow to', () => {
     
     it('call resolve with absolute path', () => {
-      const directory = Directory.withReadPermission(testRoot)
+      const directory = Directory.withReadPermission(testRoot);
       expect(() => {
         directory.resolve('/absolute_path')
       }).toThrowError(`'/absolute_path' is not a relative path`)
     });
     
     it('call file with absolute path', () => {
-      const directory = Directory.withReadPermission(testRoot)
+      const directory = Directory.withReadPermission(testRoot);
       expect(() => {
         directory.resolve('/absolute_file.xml')
       }).toThrowError(`'/absolute_file.xml' is not a relative path`)
