@@ -14,8 +14,6 @@ env:
   - TYPESCRIPT=typescript@next
 
 node_js:
-  - "4"
-  - "5"
   - "6"
 
 after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
