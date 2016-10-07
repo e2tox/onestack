@@ -31,4 +31,5 @@ export class Domain {
     return ProxyInterceptor.construct<T>(type, args);
     
   }
+  
 }
