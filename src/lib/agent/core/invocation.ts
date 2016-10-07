@@ -1,8 +1,7 @@
 import { IsFunction } from './utils';
-import { IAttribute } from './attribute';
-import { InvocationChainFactory } from './chain';
+
 export interface IActivatable<T> {
-  new (): T
+  new(...args: any[]): T
 }
 
 export interface IInvocation {
