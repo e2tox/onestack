@@ -9,6 +9,7 @@ export interface IInvocation {
   invoke(parameters: ArrayLike<any>): any;
 }
 
+
 export class GetterInvocation implements IInvocation {
   
   constructor(private _target: any, private _propertyKey: PropertyKey, private _receiver: any) {
@@ -49,7 +50,7 @@ export class SetterInvocation implements IInvocation {
 
 export class ConstructInvocation implements IInvocation {
   
-  constructor(private _target: any) {
+  constructor(private _target: any, private _receiver: any) {
   }
   
   get target(): any {
@@ -57,7 +58,24 @@ export class ConstructInvocation implements IInvocation {
   }
   
   invoke(parameters: ArrayLike<any>): any {
-    return Reflect.construct(this._target, parameters);
+    return Reflect.construct(this._target, parameters, this._receiver);
+  }
+  
+}
+
+export class FunctionInvocation implements IInvocation {
+  
+  constructor(private _target: Function) {
+  }
+  
+  get target(): any {
+    // console.log('ask target', this._target);
+    return this._target;
+  }
+  
+  invoke(receiver: any, ...args): any {
+    // console.log('invoke invocation', receiver, args);
+    return Reflect.apply(this._target, receiver, args);
   }
   
 }

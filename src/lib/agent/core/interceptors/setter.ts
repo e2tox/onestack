@@ -1,5 +1,6 @@
 import { Reflection } from '../reflection';
 import { InterceptorFactory } from '../interceptor';
+import { debug } from '../../../logger';
 
 export function SetterInterceptor<T>(target: T, propertyKey: PropertyKey, value: any, receiver: any): boolean {
   
@@ -13,7 +14,6 @@ export function SetterInterceptor<T>(target: T, propertyKey: PropertyKey, value:
   
   // ignore non-agent methods
   if (!customAttributes.length) {
-    console.log('no attr found', propertyKey)
     return Reflect.set(target, propertyKey, value, receiver);
   }
   

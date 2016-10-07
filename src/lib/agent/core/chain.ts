@@ -15,6 +15,19 @@ export class InvocationChainFactory {
     
     return chain.entry();
   }
+  
+  public static createPrototypeInvocationChain(attributes: Array<IAttribute>) {
+    
+    const prototypeChain = new PrototypeInvocationChain();
+    
+    // make invocation chain of interceptors
+    attributes.forEach(function (attribute) {
+      prototypeChain.use(attribute.getInterceptor());
+    });
+    
+    return prototypeChain;
+  }
+  
 }
 
 /**
@@ -34,6 +47,33 @@ class InvocationChain {
   }
   
 }
+
+
+export class PrototypeInvocationChain implements IInvocation {
+  
+  private invocation: IInvocation = this;
+  
+  target: any;
+  targetFunction: Function;
+  
+  use(interceptor: IInterceptor): void {
+    this.invocation = new InceptionInvocation(this.invocation, interceptor);
+  }
+  
+  invoke(parameters: ArrayLike<any>): any {
+    return Reflect.apply(this.targetFunction, this.target, parameters);
+  }
+  
+  entry(target: Function) {
+    const chain = this;
+    chain.targetFunction = target;
+    return function (): any {
+      chain.target = this;
+      return chain.invocation.invoke(arguments);
+    }
+  }
+}
+
 
 /**
  * InceptionInvocation will call next interceptor in the chain

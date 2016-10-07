@@ -9,8 +9,11 @@ import { output } from './agent.state/output';
 @agent('OneStack')
 export class Kernel {
   
-  @output('_root')
   private _root: Directory;
+  
+  constructor() {
+    // console.log('get root in cons', this._root);
+  }
   
   public static getInstance(): Kernel {
     return Domain.createAgentFromType(Kernel);
@@ -26,6 +29,7 @@ export class Kernel {
   
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public get root(): Directory {
+    // console.log('read root', this._root, arguments);
     return this._root;
   }
   

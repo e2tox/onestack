@@ -1,13 +1,22 @@
 import * as path from 'path'
 import { Kernel } from './kernel'
+import { Domain } from './agent/domain';
 
 describe('Kernel', () => {
   
   let kernel: Kernel;
   let testRoot: string;
   
+  beforeAll(() => {
+    Domain.registerClass(Kernel);
+  });
+  
   beforeEach(() => {
-    kernel = Kernel.getInstance();
+    //kernel = Kernel.getInstance();
+    kernel = new Kernel();
+    
+    // console.log('create kernel', kernel['initialized']);
+    
     // resolve from process.cwd()
     testRoot = path.resolve('test');
   });

@@ -1,4 +1,5 @@
 import { decorateClass, IAttribute, IInterceptor, IInvocation } from './core';
+import { IActivatable } from './core/invocation';
 
 /**
  * Define an agent
@@ -37,6 +38,15 @@ export class AgentAttribute implements IAttribute, IInterceptor {
   
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
     return invocation.invoke(parameters);
+  }
+  
+}
+
+
+export class Agent<T> {
+  
+  constructor(type: IActivatable<T>, ...args) {
+    
   }
   
 }
