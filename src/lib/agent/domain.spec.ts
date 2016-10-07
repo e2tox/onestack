@@ -1,4 +1,3 @@
-
 import { agent } from './agent';
 import { Domain } from './domain';
 
@@ -6,6 +5,15 @@ import { Domain } from './domain';
 class Foo {
   hello():string {
     return 'Foo.hello()';
+  }
+}
+
+@agent('foo')
+class AdvancedFoo {
+  constructor(private name: string) {
+  }
+  hello():string {
+    return `AdvancedFoo.hello(${this.name})`;
   }
 }
 
@@ -32,6 +40,11 @@ describe('Domain', () => {
       expect(foo.hello()).toBe('Foo.hello()');
     });
     
+    it('able to create agent with paramenter', () => {
+      const foo: AdvancedFoo = Domain.createAgentFromType(AdvancedFoo, 'foo');
+      expect(foo.hello()).toBe('AdvancedFoo.hello(foo)');
+    });
+  
     it('not allow to create agent', () => {
       expect(() => {
         Domain.createAgentFromType(Bar)
