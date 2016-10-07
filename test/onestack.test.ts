@@ -43,7 +43,7 @@ describe('OneStack', () => {
 
     it('should throw error when resolve to file', () => {
       expect(function () {
-        app.resolve('file.txt')
+        app.resolve('conf/settings.xml')
       }).toThrow();
     });
 
