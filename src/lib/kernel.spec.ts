@@ -24,9 +24,9 @@ describe('Kernel', () => {
     
     it('call kernel.init(\'/not-exist-directory\')', () => {
       expect(() => {
-        kernel.init('/not-exist-directory')
+        kernel.init('/not-exist-directory');
         console.error('[YOU SHOULD NEVER SEE THIS]');
-      }).toThrow(new TypeError(`ENOENT: no such file or directory, access '/not-exist-directory'`))
+      }).toThrow(new TypeError(`ENOENT: no such file or directory, stat '/not-exist-directory'`))
     });
     
     it('call kernel.root before kernel.init()', () => {

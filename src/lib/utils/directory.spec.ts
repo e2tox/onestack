@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as path from 'path'
 import { Directory } from './directory';
 
@@ -5,8 +6,13 @@ describe('Directory', () => {
   
   let testRoot: string;
   
-  beforeEach(() => {
+  beforeAll(() => {
+    // resolve test folder
     testRoot = path.resolve('test');
+    // update test file permission
+    fs.chmodSync(path.join(testRoot, 'readonly/readonly.md'), '400');
+    // update test folder permission
+    fs.chmodSync(path.join(testRoot, 'readonly'), '500');
   });
   
   describe('# not allow to', () => {
@@ -24,19 +30,19 @@ describe('Directory', () => {
         directory.resolve('/absolute_file.xml')
       }).toThrowError(`'/absolute_file.xml' is not a relative path`)
     });
-  
+    
+    it('get readonly file with read/write permission', () => {
+      expect(() => {
+        const dir = Directory.withReadWritePermission(testRoot);
+        dir.file('readonly/readonly.md');
+      }).toThrowError(`EACCES: permission denied, access '${testRoot}/readonly/readonly.md'`)
+    });
+    
     it('get readonly folder with read/write permission', () => {
       const dir = Directory.withReadWritePermission(testRoot);
       expect(() => {
         dir.resolve('readonly')
       }).toThrowError(`EACCES: permission denied, access '${testRoot}/readonly'`)
-    });
-    
-    it('get readonly file with read/write permission', () => {
-      expect(() => {
-        const dir = Directory.withReadWritePermission(testRoot);
-        dir.file('readonly.txt');
-      }).toThrowError(`EACCES: permission denied, access '${testRoot}/readonly.txt'`)
     });
     
     it('resolve directory with absolute path', () => {
@@ -47,10 +53,10 @@ describe('Directory', () => {
     });
     
     it('resolve directory with file path', () => {
+      const dir = Directory.withReadWritePermission(testRoot);
       expect(() => {
-        const dir = Directory.withReadWritePermission(testRoot);
-        dir.resolve('file.txt');
-      }).toThrowError(`'${testRoot}/file.txt' is not a directory`)
+        dir.resolve('conf/settings.yml');
+      }).toThrowError(`'${testRoot}/conf/settings.yml' is not a directory`)
     });
     
     it('get file with directory path', () => {
@@ -63,15 +69,15 @@ describe('Directory', () => {
     it('get file with absolute path', () => {
       expect(() => {
         const dir = Directory.withReadWritePermission(testRoot);
-        dir.file('/readonly.txt');
-      }).toThrowError(`'/readonly.txt' is not a relative path`)
+        dir.file('/readonly/absolute/file');
+      }).toThrowError(`'/readonly/absolute/file' is not a relative path`)
     });
     
     it('get non-exist file', () => {
       expect(() => {
         const dir = Directory.withReadWritePermission(testRoot);
         dir.file('./file-not-exists.txt');
-      }).toThrowError(`ENOENT: no such file or directory, access '${testRoot}/file-not-exists.txt'`)
+      }).toThrowError(`ENOENT: no such file or directory, stat '${testRoot}/file-not-exists.txt'`)
     });
     
   });
@@ -79,9 +85,10 @@ describe('Directory', () => {
   describe('# should able to', () => {
     
     it('get directory with read access', () => {
-      const directory = Directory.withReadPermission(testRoot);
+      const readonlyDir = path.join(testRoot,'readonly');
+      const directory = Directory.withReadPermission(readonlyDir);
       expect(directory).toBeDefined();
-      expect(directory.path).toBe(testRoot);
+      expect(directory.path).toBe(readonlyDir);
     });
     
     it('get directory with read/write access', () => {
@@ -91,10 +98,11 @@ describe('Directory', () => {
     });
     
     it('get file with read access', () => {
-      const directory = Directory.withReadPermission(testRoot);
-      const file = directory.file('conf/settings.yml');
+      const readonlyDir = path.join(testRoot,'readonly');
+      const directory = Directory.withReadPermission(readonlyDir);
+      const file = directory.file('readonly.md');
       expect(file).toBeDefined();
-      expect(file).toBe(path.join(testRoot, 'conf/settings.yml'));
+      expect(file).toBe(path.join(readonlyDir, 'readonly.md'));
     });
     
     it('get file with read/write access', () => {
