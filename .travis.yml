@@ -10,6 +10,16 @@ script:
   - npm run test-on-travis
 
 env:
+  - TYPESCRIPT=typescript@1.0
+  - TYPESCRIPT=typescript@1.1
+  - TYPESCRIPT=typescript@1.2
+  - TYPESCRIPT=typescript@1.3
+  - TYPESCRIPT=typescript@1.4
+  - TYPESCRIPT=typescript@1.5
+  - TYPESCRIPT=typescript@1.6
+  - TYPESCRIPT=typescript@1.7
+  - TYPESCRIPT=typescript@1.8
+  - TYPESCRIPT=typescript@1.9
   - TYPESCRIPT=typescript@2.0
   - TYPESCRIPT=typescript@next
 
