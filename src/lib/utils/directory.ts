@@ -19,14 +19,14 @@ export class Directory {
     // resolve directory from root
     directory = path.resolve(root, directory);
     
-    // make sure we can read
-    fs.accessSync(directory, permission);
-    
     // must directory
     let stat = fs.statSync(directory);
     if (!stat.isDirectory()) {
       throw new Error(`'${directory}' is not a directory`)
     }
+  
+    // make sure we can perform `cd` command
+    fs.accessSync(directory, permission | fs.constants.X_OK);
     
     return new Directory(directory, permission);
   }
@@ -36,14 +36,14 @@ export class Directory {
     // resolve file from root
     filePath = path.resolve(root, filePath);
     
-    // make sure we can have the permission
-    fs.accessSync(filePath, permission);
-    
     // must be a file
     let stat = fs.statSync(filePath);
     if (!stat.isFile()) {
       throw new Error(`'${filePath}' is not a file`)
     }
+  
+    // make sure we can have the permission
+    fs.accessSync(filePath, permission);
     
     return filePath;
   }
