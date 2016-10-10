@@ -42,12 +42,3 @@ export class AgentAttribute implements IAttribute, IInterceptor {
   }
   
 }
-
-
-export class Agent<T> {
-  
-  constructor(type: IActivatable<T>, ...args) {
-    
-  }
-  
-}
