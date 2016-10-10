@@ -33,9 +33,12 @@ class AgentFooWithParameters {
 
 @agent('foo')
 @agent('foobar')
-class TooManyAgentFoo {
+class MultipleAgentFoo {
+  count: number = 0;
+  
   hello(): string {
-    return 'Foo.hello()';
+    this.count++;
+    return 'MultipleAgentFoo.hello()';
   }
 }
 
@@ -58,11 +61,10 @@ describe('Domain', () => {
       expect(foo.hello()).toBe('AgentFooWithParameters.hello(foo)');
     });
     
-    it('not allow to create agent', () => {
-      expect(() => {
-        const foo = new TooManyAgentFoo();
-        console.error('[SHOULD_NEVER_SEEN_THIS]', foo);
-      }).toThrow(new TypeError('Not Support Multiple Agent Decoration'))
+    it('origin method should only called once', () => {
+      const foo = new MultipleAgentFoo();
+      expect(foo.hello()).toBe('MultipleAgentFoo.hello()');
+      expect(foo.count).toBe(1); // this method should only called once
     });
     
   });

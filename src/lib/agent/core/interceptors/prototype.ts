@@ -2,7 +2,13 @@ import { IsString, IsUndefined } from '../utils';
 import { Reflection } from '../reflection';
 import { InterceptorFactory } from '../interceptor';
 
-export function PrototypeInterceptor<Constructor extends Function>(target: Constructor) {
+/**
+ * Add prototype interceptor
+ * @param target
+ * @returns {Constructor}
+ * @constructor
+ */
+export function AddPrototypeInterceptor<Constructor extends Function>(target: Constructor) {
   
   // get the prototype of function
   const keys = Reflect.ownKeys(target.prototype);

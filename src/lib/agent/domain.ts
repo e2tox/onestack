@@ -1,8 +1,3 @@
-import { ProxyInterceptor } from './core/proxy'
-import { Reflection } from './core/reflection';
-import { AgentAttribute } from './agent';
-import { IActivatable } from './core/invocation';
-
 // a unique, global symbol name
 // -----------------------------------
 const nsDomain = Symbol.for('agent.framework.domain');
