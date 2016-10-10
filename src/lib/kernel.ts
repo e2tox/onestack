@@ -9,10 +9,6 @@ export class Kernel {
   
   private _root: Directory;
   
-  constructor() {
-    // console.log('get root in cons', this.init);
-  }
-  
   public static getInstance(): Kernel {
     return new Kernel();
   }
