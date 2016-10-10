@@ -54,7 +54,7 @@ export function decorateClass(attribute: IAttribute) {
       Reflection.addAttribute(attribute, target);
       
       const originTarget = target[ORIGIN] || target;
-  
+      
       const upgradedTarget = AddPrototypeInterceptor(originTarget);
       const upgradedConstructor = AddConstructInterceptor(upgradedTarget);
       

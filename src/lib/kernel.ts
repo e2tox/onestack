@@ -1,7 +1,5 @@
 import { Directory } from './utils/directory'
-import { Domain, agent } from './agent'
-import { success, prerequisite } from './agent.state';
-import { output } from './agent.state/output';
+import { agent, success, prerequisite } from './agent.state';
 
 /**
  * naming an agent using @gent

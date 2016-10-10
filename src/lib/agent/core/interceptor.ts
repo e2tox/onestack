@@ -1,6 +1,4 @@
-import {
-  IInvocation, ConstructInvocation, IInvoke
-} from './invocation';
+import { IInvocation, ConstructInvocation, IInvoke } from './invocation';
 import { IAttribute } from './attribute';
 import { createInvocationChainFromAttribute } from './chain';
 
@@ -25,13 +23,13 @@ export class InterceptorFactory {
     
     const originMethod = method[ORIGIN] || method;
     const origin: IInvocation = {
-      invoke: function(parameters: ArrayLike<any>) {
+      invoke: function (parameters: ArrayLike<any>) {
         return Reflect.apply(originMethod, this.target, parameters);
       }
     };
-  
+    
     const chain = createInvocationChainFromAttribute(origin, attributes);
-    const upgradedMethod =  function () {
+    const upgradedMethod = function () {
       origin.target = this;
       origin.method = originMethod;
       return chain.invoke(arguments);

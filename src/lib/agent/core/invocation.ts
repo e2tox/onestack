@@ -1,9 +1,3 @@
-import { IsFunction } from './utils';
-
-export interface IActivatable<T> {
-  new(parameters?: ArrayLike<any>): T
-}
-
 export interface IInvoke {
   (parameters: ArrayLike<any>): any
 }

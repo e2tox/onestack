@@ -1,5 +1,4 @@
 import { decorateClass, IAttribute, IInterceptor, IInvocation } from './core';
-import { IActivatable } from './core/invocation';
 
 /**
  * Define an agent

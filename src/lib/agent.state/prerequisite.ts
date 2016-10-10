@@ -1,7 +1,6 @@
 import { IAttribute, IInterceptor, IInvocation, decorateClassMembers } from '../agent/core';
 import { IsEqual, IsString } from '../agent/core/utils';
 
-
 /**
  * Define a prerequisite
  * @param key
