@@ -48,16 +48,13 @@ export function decorateClass(attribute: IAttribute) {
   
   // upgrade prototype
   return <Constructor extends Function>(target: Constructor): Constructor | void => {
+  
+    const originTarget = target[ORIGIN] || target;
     
-    if (attribute.beforeDecorate(target)) {
-      
-      Reflection.addAttribute(attribute, target);
-      
-      const originTarget = target[ORIGIN] || target;
-      
+    if (attribute.beforeDecorate(originTarget)) {
+      Reflection.addAttribute(attribute, originTarget);
       const upgradedTarget = AddPrototypeInterceptor(originTarget);
       const upgradedConstructor = AddConstructInterceptor(upgradedTarget);
-      
       upgradedConstructor[ORIGIN] = originTarget;
       return upgradedConstructor;
     }

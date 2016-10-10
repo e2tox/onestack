@@ -12,9 +12,9 @@ function ConstructInterceptor<T>(target: T, argArray: ArrayLike<any>, receiver: 
   
   const customAttributes = Reflection.getAttributes(target);
   
-  if (customAttributes.length > 1) {
-    throw new TypeError('Not Support Multiple Agent Decoration');
-  }
+  // if (customAttributes.length > 1) {
+  //   throw new TypeError('Not Support Multiple Agent Decoration');
+  // }
   
   const invocation = InterceptorFactory.createConstructInterceptor(customAttributes, target, receiver);
   

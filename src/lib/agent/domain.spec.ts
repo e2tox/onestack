@@ -31,8 +31,8 @@ class AgentFooWithParameters {
   }
 }
 
-@agent('foo')
-@agent('foobar')
+@agent('multifoo')
+@agent('multifoobar')
 class MultipleAgentFoo {
   count: number = 0;
   
