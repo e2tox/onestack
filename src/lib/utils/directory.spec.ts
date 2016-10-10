@@ -84,6 +84,11 @@ describe('Directory', () => {
   
   describe('# should able to', () => {
     
+    it('get cwd()', () => {
+      const cwd = Directory.cwd();
+      expect(cwd.path).toBe(process.cwd());
+    });
+    
     it('get directory with read access', () => {
       const readonlyDir = path.join(testRoot,'readonly');
       const directory = Directory.withReadPermission(readonlyDir);
@@ -102,14 +107,16 @@ describe('Directory', () => {
       const directory = Directory.withReadPermission(readonlyDir);
       const file = directory.file('readonly.md');
       expect(file).toBeDefined();
-      expect(file).toBe(path.join(readonlyDir, 'readonly.md'));
+      expect(file.path).toBe(path.join(readonlyDir, 'readonly.md'));
+      expect(file.permission).toBe(fs.constants.R_OK);
     });
     
     it('get file with read/write access', () => {
       const directory = Directory.withReadWritePermission(testRoot);
       const file = directory.file('conf/settings.yml');
       expect(file).toBeDefined();
-      expect(file).toBe(path.join(testRoot, 'conf/settings.yml'));
+      expect(file.path).toBe(path.join(testRoot, 'conf/settings.yml'));
+      expect(file.permission).toBe(fs.constants.R_OK | fs.constants.W_OK);
     });
     
   });

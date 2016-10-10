@@ -6,6 +6,10 @@ export class Directory {
   private constructor(private _directory: string, private _permission: number) {
   }
   
+  public static cwd(): Directory {
+    return Directory.resolve(process.cwd(), '.', fs.constants.R_OK);
+  }
+  
   public static withReadPermission(directory: string): Directory {
     return Directory.resolve(process.cwd(), directory, fs.constants.R_OK);
   }
@@ -31,23 +35,6 @@ export class Directory {
     return new Directory(directory, permission);
   }
   
-  private static file(root: string, filePath: string, permission: number): string {
-    
-    // resolve file from root
-    filePath = path.resolve(root, filePath);
-    
-    // must be a file
-    let stat = fs.statSync(filePath);
-    if (!stat.isFile()) {
-      throw new Error(`'${filePath}' is not a file`)
-    }
-  
-    // make sure we can have the permission
-    fs.accessSync(filePath, permission);
-    
-    return filePath;
-  }
-  
   public get path(): string {
     return this._directory;
   }
@@ -59,11 +46,43 @@ export class Directory {
     return Directory.resolve(this._directory, relativePath, this._permission);
   }
   
-  public file(relativeFilePath: string): string {
+  public file(relativeFilePath: string): File {
     if (path.isAbsolute(relativeFilePath)) {
       throw new Error(`'${relativeFilePath}' is not a relative path`);
     }
-    return Directory.file(this._directory, relativeFilePath, this._permission);
+    return File.resolve(this, relativeFilePath, this._permission);
+  }
+  
+}
+
+class File {
+  
+  private constructor(private _file: string, private _permission: number) {
+  }
+  
+  public static resolve(root: Directory, filePath: string, permission: number): File {
+    
+    // resolve file from root
+    filePath = path.resolve(root.path, filePath);
+    
+    // must be a file
+    let stat = fs.statSync(filePath);
+    if (!stat.isFile()) {
+      throw new Error(`'${filePath}' is not a file`)
+    }
+    
+    // make sure we can have the permission
+    fs.accessSync(filePath, permission);
+    
+    return new File(filePath, permission);
+  }
+  
+  public get path(): string {
+    return this._file;
+  }
+  
+  public get permission(): number {
+    return this._permission;
   }
   
 }
