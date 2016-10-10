@@ -1,5 +1,5 @@
 import * as path from 'path'
-import app from '../src/lib'
+import app from '../../src/lib'
 
 describe('OneStack', () => {
 

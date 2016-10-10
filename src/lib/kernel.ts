@@ -1,6 +1,7 @@
 import { Directory } from './utils/directory'
 import { agent, success, prerequisite } from './agent.state';
 import { loadSettings } from './loader';
+import { IsUndefined } from './agent/core/utils';
 
 /**
  * naming an agent using @gent
@@ -40,7 +41,7 @@ export class Kernel {
   
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public get(key: string): boolean {
-    if (this._settings.hasOwnProperty(key)) {
+    if (IsUndefined(this._settings[key])) {
       throw new Error('Missing required configuration setting: `' + key + '`');
     }
     return this._settings[key];
@@ -48,7 +49,7 @@ export class Kernel {
   
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public has(key: string): boolean {
-    return this._settings.hasOwnProperty(key);
+    return !IsUndefined(this._settings[key]);
   }
   
 }

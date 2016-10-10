@@ -24,9 +24,6 @@ export class AgentAttribute implements IAttribute, IInterceptor {
   }
   
   beforeDecorate(target: Object|Function, targetKey?: string|symbol, descriptor?: PropertyDescriptor): boolean {
-    if (!targetKey) {
-      console.log('dec', this.identifier);
-    }
     return true;
   }
   

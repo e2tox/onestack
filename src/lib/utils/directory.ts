@@ -19,7 +19,7 @@ export class Directory {
   }
   
   private static resolve(root: string, directory: string, permission: number): Directory {
-  
+    
     // resolve directory from root
     directory = path.resolve(root, directory);
     
@@ -29,17 +29,27 @@ export class Directory {
     try {
       // make sure this file exists
       stat = fs.statSync(directory);
-  
-      // make sure we can perform `cd` command
-      fs.accessSync(directory, permission | fs.constants.X_OK);
     }
-    catch(err) {
-      err.file = directory;
-      throw err;
+    catch (err) {
+      const newErr = new Error(`Directory '${directory}' is not exist`);
+      newErr['file'] = directory;
+      newErr['innerError'] = err;
+      throw newErr;
     }
     
     if (!stat.isDirectory()) {
-      throw new Error(`'${directory}' is not a directory`)
+      const err = new Error(`'${directory}' is not a directory`);
+      err['file'] = directory;
+      throw err;
+    }
+    
+    try {
+      // make sure we can perform `cd` command
+      fs.accessSync(directory, permission | fs.constants.X_OK);
+    }
+    catch (err) {
+      err.file = directory;
+      throw err;
     }
     
     return new Directory(directory, permission);
@@ -81,18 +91,27 @@ export class File {
     try {
       // make sure this file exists
       stat = fs.statSync(filePath);
-
-      // make sure we can have the permission
-      fs.accessSync(filePath, permission);
     }
-    catch(err) {
-      err.file = filePath;
-      throw err;
+    catch (err) {
+      const newErr = new Error(`File '${filePath}' is not exist`);
+      newErr['file'] = filePath;
+      newErr['innerError'] = err;
+      throw newErr;
     }
     
     if (!stat.isFile()) {
       throw new Error(`'${filePath}' is not a file`)
     }
+    
+    try {
+      // make sure we can have the permission
+      fs.accessSync(filePath, permission);
+    }
+    catch (err) {
+      err.file = filePath;
+      throw err;
+    }
+    
     
     return new File(filePath, permission);
   }

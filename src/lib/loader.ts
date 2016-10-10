@@ -13,7 +13,7 @@ export function loadSettings(root: Directory) {
    * Load default settings
    */
   try {
-    const defaultSettingsFile = root.file('conf/settings.yml');
+    const defaultSettingsFile = root.file('conf/settings.yaml');
     settings = parseYAML(defaultSettingsFile);
     if (IsUndefined(settings)) {
       console.error(`ERROR: Main setting file '${defaultSettingsFile.path}' is empty, exiting...`);
@@ -29,7 +29,7 @@ export function loadSettings(root: Directory) {
    * Validate NODE_ENV and load environment settings
    */
   if (testEnvironment(root)) {
-    const environmentSettingsFile = root.file('conf/' + process.env[NODE_ENV] + '.yml');
+    const environmentSettingsFile = root.file('conf/' + process.env[NODE_ENV] + '.yaml');
     const environmentSettings = parseYAML(environmentSettingsFile);
     for (var k in environmentSettings) {
       if (environmentSettings.hasOwnProperty(k)) {
@@ -44,7 +44,7 @@ export function loadSettings(root: Directory) {
    * Load local environment settings
    */
   try {
-    const environmentSettingsFile = root.file('conf/' + process.env[NODE_ENV] + '.local.yml');
+    const environmentSettingsFile = root.file('conf/' + process.env[NODE_ENV] + '.local.yaml');
     const environmentSettings = parseYAML(environmentSettingsFile);
     for (var k in environmentSettings) {
       if (environmentSettings.hasOwnProperty(k)) {

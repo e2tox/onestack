@@ -7,7 +7,7 @@ describe('Kernel', () => {
   
   beforeAll(() => {
     // resolve from process.cwd()
-    testRoot = path.resolve('test/ok');
+    testRoot = path.resolve('test/minimal');
   });
   
 
@@ -27,7 +27,7 @@ describe('Kernel', () => {
       expect(() => {
         kernel.init('/not-exist-directory');
         console.error('[YOU SHOULD NEVER SEE THIS]');
-      }).toThrow(new TypeError(`ENOENT: no such file or directory, stat '/not-exist-directory'`))
+      }).toThrow(new Error(`Directory '/not-exist-directory' is not exist`))
     });
     
     it('call kernel.root before kernel.init()', () => {
