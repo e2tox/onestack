@@ -15,7 +15,7 @@ describe('full_customized', () => {
     const kernel = new Kernel();
     kernel.init(testRoot);
     expect(kernel.settings).toBeDefined();
-    expect(kernel.settings['PORT']).toBe(11023);
+    expect(kernel.settings.PORT).toBe(11023);
   });
   
   it('should able to get settings', () => {

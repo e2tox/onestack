@@ -9,6 +9,8 @@ export function loadSettings(root: Directory) {
   
   let settings;
   
+  console.log();
+  
   /**
    * Load default settings
    */
@@ -115,6 +117,8 @@ export function loadSettings(root: Directory) {
   
   // set home dir to root
   settings.HOME_DIR = root.path;
+  
+  console.log();
   
   // freeze the settings
   return Object.freeze(settings);
