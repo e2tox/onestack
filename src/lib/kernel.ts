@@ -16,7 +16,7 @@ export class Kernel {
   }
   
   public static getInstance(): Kernel {
-    return Domain.createAgentFromType(Kernel);
+    return new Kernel();
   }
   
   @prerequisite('initialized', false, 'OneStack already initialized')
@@ -39,3 +39,4 @@ export class Kernel {
   }
   
 }
+

@@ -1,18 +1,13 @@
 import { Reflection } from '../reflection';
 import { InterceptorFactory } from '../interceptor';
-import { IsUndefined } from '../utils';
-import { IActivatable } from '../invocation';
 
-
-
-export function ConstructInterceptor<T>(target: IActivatable<T>, argArray: ArrayLike<any>, receiver: any): any {
+export function ConstructInterceptor<T>(target: T, argArray: ArrayLike<any>, receiver: any): any {
   
   const customAttributes = Reflection.getAttributes(target);
   
-  // this is proxy intercetpor
-  // console.log('this', this);
-  // console.log('target.prototype', target.prototype);
-  // console.log('receiver.prototype', receiver.prototype);
+  if (customAttributes.length > 1) {
+    throw new TypeError('Not Support Multiple Agent Decoration');
+  }
   
   const invocation = InterceptorFactory.createConstructInterceptor(customAttributes, target, receiver);
   

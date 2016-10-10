@@ -1,13 +1,11 @@
 import * as path from 'path'
 import { Kernel } from './kernel'
-import { Domain } from './agent/domain';
 
 describe('Kernel', () => {
   
   let testRoot: string;
   
   beforeAll(() => {
-    Domain.registerClass(Kernel);
     // resolve from process.cwd()
     testRoot = path.resolve('test');
   });

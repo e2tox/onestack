@@ -12,7 +12,7 @@ describe('Agent', () => {
   
     it('initialize', () => {
       
-      // const foo: Foo = new Agent(Foo);
+      // const foo: AgentFoo = new Agent(AgentFoo);
       // console.log('create agent with domain')
     });
   

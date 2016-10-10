@@ -1,45 +1,41 @@
 import { agent } from './agent';
 import { Domain } from './domain';
 
-@agent('foo')
 class Foo {
-  
-  constructor() {
-    try {
-      console.log(this.hello());
-    }
-    catch (e) {
-      console.log('error', e);
-    }
-    
-  }
-  
   hello(): string {
     return 'Foo.hello()';
   }
 }
 
 @agent('foo')
-class AdvancedFoo {
+class AgentFoo {
+  
+  constructor() {
+    if (this.hello() !== 'AgentFoo.hello()') {
+      throw new TypeError(this.hello())
+    }
+  }
+  
+  hello(): string {
+    return 'AgentFoo.hello()';
+  }
+}
+
+@agent('foo')
+class AgentFooWithParameters {
   constructor(private name: string) {
   }
   
   hello(): string {
-    return `AdvancedFoo.hello(${this.name})`;
-  }
-}
-
-class Bar {
-  hello(): string {
-    return 'Bar.hello()';
+    return `AgentFooWithParameters.hello(${this.name})`;
   }
 }
 
 @agent('foo')
 @agent('foobar')
-class FooBar {
+class TooManyAgentFoo {
   hello(): string {
-    return 'Bar.hello()';
+    return 'Foo.hello()';
   }
 }
 
@@ -47,41 +43,28 @@ describe('Domain', () => {
   
   describe('# createAgentFromType', () => {
     
-    it('able to create agent', () => {
-      const foo: Foo = Domain.createAgentFromType(Foo);
+    it('able to create normal object', () => {
+      const foo: Foo = new Foo();
       expect(foo.hello()).toBe('Foo.hello()');
     });
     
+    it('able to create agent', () => {
+      const foo: AgentFoo = new AgentFoo();
+      expect(foo.hello()).toBe('AgentFoo.hello()');
+    });
+    
     it('able to create agent with paramenter', () => {
-      const foo: AdvancedFoo = Domain.createAgentFromType(AdvancedFoo, 'foo');
-      expect(foo.hello()).toBe('AdvancedFoo.hello(foo)');
+      const foo: AgentFooWithParameters = new AgentFooWithParameters('foo');
+      expect(foo.hello()).toBe('AgentFooWithParameters.hello(foo)');
     });
     
     it('not allow to create agent', () => {
       expect(() => {
-        Domain.createAgentFromType(Bar)
-      }).toThrow(new TypeError('Agent Decoration Not Found'))
-    });
-    
-    it('not allow to create agent', () => {
-      expect(() => {
-        Domain.createAgentFromType(FooBar)
+        const foo = new TooManyAgentFoo();
+        console.error('[SHOULD_NEVER_SEEN_THIS]', foo);
       }).toThrow(new TypeError('Not Support Multiple Agent Decoration'))
     });
     
   });
-  
-  // describe('# upgradeClass', () => {
-  //
-  //   it('able to register class to default domain', () => {
-  //
-  //     const FooAgent = Domain.upgradeClass(Foo);
-  //
-  //     const foo = new FooAgent();
-  //     expect(foo).toBeDefined();
-  //
-  //   });
-  //
-  // });
   
 });

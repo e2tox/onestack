@@ -1,10 +1,11 @@
 import { decorateClass, IAttribute, IInterceptor, IInvocation } from './core';
 import { IActivatable } from './core/invocation';
+import { Reflection } from './core/reflection';
 
 /**
  * Define an agent
  * @param identifier
- * @returns {(target:any, propertyKey:string, descriptor:PropertyDescriptor)=>undefined}
+ * @returns {(target:Constructor)=>(void|Constructor)}
  */
 export function agent(identifier: string) {
   return decorateClass(new AgentAttribute(identifier));
@@ -37,6 +38,7 @@ export class AgentAttribute implements IAttribute, IInterceptor {
   }
   
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
+    // console.log('create new ', invocation.target, parameters);
     return invocation.invoke(parameters);
   }
   

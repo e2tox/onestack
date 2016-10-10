@@ -1,8 +1,11 @@
 import {
-  IInvocation, GetterInvocation, IActivatable, ConstructInvocation, SetterInvocation, IInvoke
+  IInvocation, GetterInvocation, ConstructInvocation, SetterInvocation, IInvoke
 } from './invocation';
 import { IAttribute } from './attribute';
 import { createInvocationChainFromAttribute } from './chain';
+
+const ORIGIN = Symbol('agent.framework.origin.method');
+
 
 export interface IInterceptor {
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any;
@@ -11,7 +14,7 @@ export interface IInterceptor {
 export class InterceptorFactory {
   
   public static createConstructInterceptor<T>(attributes: Array<IAttribute>,
-                                              target: IActivatable<T>,
+                                              target: T,
                                               receiver: any): IInvocation {
     
     const invocation = new ConstructInvocation(target, receiver);
@@ -35,21 +38,22 @@ export class InterceptorFactory {
   }
   
   public static createFunctionInterceptor(attributes: Array<IAttribute>, method: IInvoke) {
-  
+    
+    const originMethod = method[ORIGIN] || method;
     const origin: IInvocation = {
       invoke: function(parameters: ArrayLike<any>) {
-        return Reflect.apply(method, this.target, parameters);
+        return Reflect.apply(originMethod, this.target, parameters);
       }
     };
   
     const chain = createInvocationChainFromAttribute(origin, attributes);
-  
-    return function () {
+    const upgradedMethod =  function () {
       origin.target = this;
-      origin.method = method;
+      origin.method = originMethod;
       return chain.invoke(arguments);
     };
-    
+    upgradedMethod[ORIGIN] = originMethod;
+    return upgradedMethod;
   }
   
 }

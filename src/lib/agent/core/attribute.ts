@@ -1,5 +1,9 @@
 import { IInterceptor } from './interceptor';
 import { Reflection } from './reflection';
+import { ConstructInterceptor } from './interceptors/construct';
+import { PrototypeInterceptor } from './interceptors/prototype';
+
+const ORIGIN = Symbol('agent.framework.origin.constructor');
 
 export interface IAttribute {
   
@@ -22,18 +26,43 @@ export interface IAttribute {
   
 }
 
-export function decorateClass(attribute: IAttribute) {
-  return (target: Function): void => {
-    if (attribute.beforeDecorate(target)) {
-      Reflection.addAttribute(attribute, target);
-    }
-  }
-}
-
+/**
+ * Decorate class members
+ * @param attribute
+ * @returns {(target:Object, propertyKey:(string|symbol), descriptor?:PropertyDescriptor)=>void}
+ */
 export function decorateClassMembers(attribute: IAttribute) {
   return (target: Object, propertyKey: string | symbol, descriptor?: PropertyDescriptor): void => {
     if (attribute.beforeDecorate(target, propertyKey, descriptor)) {
       Reflection.addAttribute(attribute, target, propertyKey, descriptor)
     }
+  }
+}
+
+/**
+ * Decorate class
+ * @param attribute
+ * @returns {(target:Constructor)=>(void|Constructor)}
+ */
+export function decorateClass(attribute: IAttribute) {
+  
+  // upgrade prototype
+  return <Constructor extends Function>(target: Constructor): Constructor | void => {
+    
+    const originTarget = target[ORIGIN] || target;
+    
+    if (attribute.beforeDecorate(originTarget)) {
+      Reflection.addAttribute(attribute, originTarget);
+      
+      const upgradedTarget = PrototypeInterceptor(originTarget);
+      const typeProxyHandler = {
+        construct: ConstructInterceptor
+      };
+      
+      const upgradedConstructor = new Proxy(upgradedTarget, typeProxyHandler);
+      upgradedConstructor[ORIGIN] = originTarget;
+      return upgradedConstructor;
+    }
+    
   }
 }
