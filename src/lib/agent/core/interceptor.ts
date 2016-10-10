@@ -25,13 +25,13 @@ export class InterceptorFactory {
     const origin: IInvocation = {
       invoke: function (parameters: ArrayLike<any>) {
         return Reflect.apply(originMethod, this.target, parameters);
-      }
+      },
+      method: originMethod
     };
     
     const chain = createInvocationChainFromAttribute(origin, attributes);
     const upgradedMethod = function () {
       origin.target = this;
-      origin.method = originMethod;
       return chain.invoke(arguments);
     };
     upgradedMethod[ORIGIN] = originMethod;
