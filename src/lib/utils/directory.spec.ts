@@ -55,8 +55,8 @@ describe('Directory', () => {
     it('resolve directory with file path', () => {
       const dir = Directory.withReadWritePermission(testRoot);
       expect(() => {
-        dir.resolve('conf/settings.yml');
-      }).toThrowError(`'${testRoot}/conf/settings.yml' is not a directory`)
+        dir.resolve('ok/conf/settings.yml');
+      }).toThrowError(`EACCES: permission denied, access '${testRoot}/ok/conf/settings.yml'`)
     });
     
     it('get file with directory path', () => {
@@ -113,9 +113,9 @@ describe('Directory', () => {
     
     it('get file with read/write access', () => {
       const directory = Directory.withReadWritePermission(testRoot);
-      const file = directory.file('conf/settings.yml');
+      const file = directory.file('ok/conf/settings.yml');
       expect(file).toBeDefined();
-      expect(file.path).toBe(path.join(testRoot, 'conf/settings.yml'));
+      expect(file.path).toBe(path.join(testRoot, 'ok/conf/settings.yml'));
       expect(file.permission).toBe(fs.constants.R_OK | fs.constants.W_OK);
     });
     

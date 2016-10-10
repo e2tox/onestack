@@ -7,7 +7,7 @@ describe('Kernel', () => {
   
   beforeAll(() => {
     // resolve from process.cwd()
-    testRoot = path.resolve('test');
+    testRoot = path.resolve('test/ok');
   });
   
 

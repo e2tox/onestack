@@ -39,6 +39,7 @@
     "ws": "latest"
   },
   "devDependencies": {
+    "@types/js-yaml": "^3.5.28",
     "@types/jasmine": "latest",
     "@types/node": "latest",
     "@types/webpack": "latest",

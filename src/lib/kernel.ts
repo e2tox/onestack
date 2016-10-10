@@ -1,5 +1,6 @@
 import { Directory } from './utils/directory'
 import { agent, success, prerequisite } from './agent.state';
+import { loadSettings } from './loader';
 
 /**
  * naming an agent using @gent
@@ -8,6 +9,7 @@ import { agent, success, prerequisite } from './agent.state';
 export class Kernel {
   
   private _root: Directory;
+  private _settings: any;
   
   public static getInstance(): Kernel {
     return new Kernel();
@@ -17,8 +19,7 @@ export class Kernel {
   @success('initialized', true)
   public init(configDir: string = process.cwd()): void {
     this._root = Directory.withReadPermission(configDir);
-    // const conf = this._root.resolve('conf');
-    // console.log(conf);
+    this._settings = loadSettings(this._root);
   }
   
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
@@ -30,6 +31,24 @@ export class Kernel {
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public resolve(relativePath = ''): Directory {
     return this._root.resolve(relativePath);
+  }
+  
+  @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
+  public get settings(): any {
+    return this._settings;
+  }
+  
+  @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
+  public get(key: string): boolean {
+    if (this._settings.hasOwnProperty(key)) {
+      throw new Error('Missing required configuration setting: `' + key + '`');
+    }
+    return this._settings[key];
+  }
+  
+  @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
+  public has(key: string): boolean {
+    return this._settings.hasOwnProperty(key);
   }
   
 }

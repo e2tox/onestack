@@ -24,13 +24,23 @@ export class Directory {
     directory = path.resolve(root, directory);
     
     // must directory
-    let stat = fs.statSync(directory);
+    let stat;
+    
+    try {
+      // make sure this file exists
+      stat = fs.statSync(directory);
+  
+      // make sure we can perform `cd` command
+      fs.accessSync(directory, permission | fs.constants.X_OK);
+    }
+    catch(err) {
+      err.file = directory;
+      throw err;
+    }
+    
     if (!stat.isDirectory()) {
       throw new Error(`'${directory}' is not a directory`)
     }
-  
-    // make sure we can perform `cd` command
-    fs.accessSync(directory, permission | fs.constants.X_OK);
     
     return new Directory(directory, permission);
   }
@@ -55,7 +65,7 @@ export class Directory {
   
 }
 
-class File {
+export class File {
   
   private constructor(private _file: string, private _permission: number) {
   }
@@ -66,13 +76,23 @@ class File {
     filePath = path.resolve(root.path, filePath);
     
     // must be a file
-    let stat = fs.statSync(filePath);
+    let stat;
+    
+    try {
+      // make sure this file exists
+      stat = fs.statSync(filePath);
+
+      // make sure we can have the permission
+      fs.accessSync(filePath, permission);
+    }
+    catch(err) {
+      err.file = filePath;
+      throw err;
+    }
+    
     if (!stat.isFile()) {
       throw new Error(`'${filePath}' is not a file`)
     }
-    
-    // make sure we can have the permission
-    fs.accessSync(filePath, permission);
     
     return new File(filePath, permission);
   }
@@ -83,6 +103,10 @@ class File {
   
   public get permission(): number {
     return this._permission;
+  }
+  
+  public readAll(): string {
+    return fs.readFileSync(this._file, 'utf8');
   }
   
 }
