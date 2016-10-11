@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { parseYAML, parseJSON } from './utils/parser';
 import { Directory } from './utils/directory';
-import { IsUndefined } from './agent/core/utils';
+import { IsUndefined } from './utils/utils';
 
 export const NODE_ENV = 'NODE_ENV';
 

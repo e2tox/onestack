@@ -34,7 +34,7 @@
     "test-on-teamcity": "exit 1"
   },
   "dependencies": {
-    "reflect-metadata": "latest",
+    "agentframework": "latest",
     "require-yaml": "latest",
     "ws": "latest"
   },

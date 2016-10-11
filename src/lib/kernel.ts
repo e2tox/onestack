@@ -1,7 +1,7 @@
 import { Directory } from './utils/directory'
-import { agent, success, prerequisite } from './agent.state';
+import { agent, success, prerequisite } from 'agentframework';
 import { loadSettings } from './loader';
-import { IsUndefined } from './agent/core/utils';
+import { IsUndefined } from './utils/utils';
 
 /**
  * naming an agent using @gent
