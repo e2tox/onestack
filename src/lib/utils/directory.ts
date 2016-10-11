@@ -1,8 +1,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { agent, failure } from 'agentframework';
+import { agent } from 'agentframework';
 
-@agent('Directory')
+@agent('firectory')
 export class Directory {
   
   private constructor(private _directory: string, private _permission: number) {
@@ -68,7 +68,6 @@ export class Directory {
     return Directory.resolve(this._directory, relativePath, this._permission);
   }
   
-
   public file(relativeFilePath: string): File {
     if (path.isAbsolute(relativeFilePath)) {
       throw new Error(`'${relativeFilePath}' is not a relative path`);
@@ -78,6 +77,7 @@ export class Directory {
   
 }
 
+@agent('file')
 export class File {
   
   private constructor(private _file: string, private _permission: number) {

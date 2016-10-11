@@ -3,120 +3,47 @@ import { parseYAML, parseJSON } from './utils/parser';
 import { Directory } from './utils/directory';
 import { IsUndefined } from './utils/utils';
 
-export const NODE_ENV = 'NODE_ENV';
-
 export function loadSettings(root: Directory) {
   
-  let settings;
+  const loader = new Loader();
   
   console.log();
   
   /**
-   * Load default settings
+   * Ensure NODE_ENV is present
    */
-  try {
-    const defaultSettingsFile = root.file('conf/settings.yaml');
-    settings = parseYAML(defaultSettingsFile);
-    if (IsUndefined(settings)) {
-      console.error(`ERROR: Main setting file '${defaultSettingsFile.path}' is empty, exiting...`);
-      process.exit(1);
-    }
-  }
-  catch (err) {
-    console.error(`ERROR: Main setting file '${err.file}' is not found, exiting...`);
-    process.exit(2);
-  }
+  const env = loader.checkEnvironment();
+  const settings = {};
   
   /**
-   * Validate NODE_ENV and load environment settings
+   * Load default settings
    */
-  if (testEnvironment(root)) {
-    const environmentSettingsFile = root.file('conf/' + process.env[NODE_ENV] + '.yaml');
-    const environmentSettings = parseYAML(environmentSettingsFile);
-    for (var k in environmentSettings) {
-      if (environmentSettings.hasOwnProperty(k)) {
-        if (environmentSettings[k] !== null) {
-          settings[k] = environmentSettings[k];
-        }
-      }
-    }
-  }
+  loader.applyEnvironmentSettings(root, settings, 'conf/settings.yaml');
+  
+  /**
+   * Validate NODE_ENV and path default settings with environment settings
+   */
+  loader.applyEnvironmentSettings(root, settings, 'conf/' + env + '.yaml');
   
   /**
    * Load local environment settings
    */
-  try {
-    const environmentSettingsFile = root.file('conf/' + process.env[NODE_ENV] + '.local.yaml');
-    const environmentSettings = parseYAML(environmentSettingsFile);
-    for (var k in environmentSettings) {
-      if (environmentSettings.hasOwnProperty(k)) {
-        if (environmentSettings[k] !== null) {
-          settings[k] = environmentSettings[k];
-        }
-      }
-    }
-  }
-  catch (err) {
-    console.log(`INFO: Local environment setting file '${err.file}' is not found, ignoring...`);
-  }
+  loader.applyEnvironmentSettings(root, settings, 'conf/' + env + '.local.yaml');
   
   /**
    * Load app version
    */
+  loader.loadPackageVersion(root, settings);
   
-  let packageFile;
-  
-  try {
-    packageFile = root.file('package.json');
-    try {
-      const pkg = parseJSON(packageFile);
-      settings.VERSION = pkg.version;
-    }
-    catch (err) {
-      console.log(`INFO: Package file '${err.file}' parsing error, ignoring...`);
-    }
-  }
-  catch (err) {
-    console.log(`INFO: Package file '${err.file}' is not found, ignoring...`);
-  }
-    
   /**
    * This is the last chance to get mandatory configurations from environment variables.
    */
-  var fulfilled = true;
+  loader.resolveAbsolutePath(root, settings);
   
-  var dirPostfix = '_DIR';
-  for (var key in settings) {
-    if (settings.hasOwnProperty(key)) {
-      if (!IsUndefined(process.env[key])) {
-        console.log('Applying ' + key + ' from environment value `' + process.env[key] + '`');
-        settings[key] = process.env[key];
-      } else if (settings[key] === null) {
-        fulfilled = false;
-        console.error('ERROR: Missing environment variable: ' + key);
-      }
-      
-      /**
-       * Convert all relative path to absolute path
-       */
-      if (key.indexOf(dirPostfix, key.length - dirPostfix.length) !== -1) {
-        var dir = settings[key];
-        if (dir.length && dir[0] === '/') {
-          settings[key] = path.resolve(dir);
-        } else {
-          settings[key] = root.resolve(dir).path;
-        }
-      }
-      
-    }
-  }
-  
-  if (!fulfilled) {
-    throw Error('Prerequisite environment variable is missing');
-  }
-  
-  // set home dir to root
-  settings.HOME_DIR = root.path;
+  /**
+   * Add system level settings
+   */
+  loader.setSystemVariable(root, settings, env);
   
   console.log();
   
@@ -124,27 +51,115 @@ export function loadSettings(root: Directory) {
   return Object.freeze(settings);
 }
 
+class Loader {
+  
+  checkEnvironment() {
+    if (!process.env['NODE_ENV']) {
+      console.error('\x1b[33m', 'NODE_ENV is not defined! Using default production environment', '\x1b[0m');
+      process.env['NODE_ENV'] = 'production';
+    }
+    else {
+      console.log('\x1b[7m', 'Application loaded using the "' + process.env['NODE_ENV'] + '" configuration', '\x1b[0m');
+    }
+    return process.env['NODE_ENV'];
+  }
+  
+  applyEnvironmentSettings(root, settings, filename) {
 
-function testEnvironment(root: Directory): boolean {
+    let localSettingsFile;
   
-  // Check NODE_ENV
-  if (!process.env[NODE_ENV]) {
-    console.error('\x1b[33m', 'NODE_ENV is not defined! Using default production environment', '\x1b[0m');
-    process.env[NODE_ENV] = 'production';
+    try {
+    
+      localSettingsFile = root.file(filename);
+
+      try {
+      
+        let environmentSettings = parseYAML(localSettingsFile);
+  
+        console.log(`INFO: Applying local environment setting '${localSettingsFile.path}'...`);
+        
+        for (const key in environmentSettings) {
+          if (environmentSettings.hasOwnProperty(key)) {
+            if (environmentSettings[key] !== null) {
+              settings[key] = environmentSettings[key];
+            }
+          }
+        }
+      }
+      catch (err) {
+        console.error(`ERROR: Error parsing '${err.file}', reason: '${err.message}', exiting...`);
+        process.exit(1);
+      }
+    
+    }
+    catch (err) {
+      console.log(`WARN: Local environment setting file '${err.file}' is not found, ignoring...`);
+    }
+    
   }
   
-  /**
-   * Before we begin, lets set the environment variable
-   * We'll Look for a valid NODE_ENV variable and if one cannot be found load the development NODE_ENV
-   */
-  try {
-    root.file('conf/' + process.env[NODE_ENV] + '.yaml');
-    console.log('\x1b[7m', 'Application loaded using the "' + process.env[NODE_ENV] + '" environment configuration', '\x1b[0m');
-    return true;
+  loadPackageVersion(root, settings) {
+    
+    let packageFile;
+  
+    try {
+      packageFile = root.file('package.json');
+      try {
+        const pkg = parseJSON(packageFile);
+        settings.VERSION = pkg.version;
+      }
+      catch (err) {
+        console.log(`WARN: Package file '${err.file}' parsing error, ignoring...`);
+      }
+    }
+    catch (err) {
+      console.log(`WARN: Package file '${err.file}' is not found, ignoring...`);
+    }
+    
   }
-  catch (err) {
-    console.log('\x1b[33m', 'No configuration file found for "' + process.env[NODE_ENV] + '", using environment variables instead', '\x1b[0m');
-    return false;
+  
+  resolveAbsolutePath(root, settings) {
+    
+    var fulfilled = true;
+  
+    var postfix = '_DIR';
+    for (var key in settings) {
+      if (settings.hasOwnProperty(key)) {
+      
+        if (!IsUndefined(process.env[key])) {
+          console.log('Applying ' + key + ' from environment value `' + process.env[key] + '`');
+          settings[key] = process.env[key];
+        } else if (settings[key] === null) {
+          fulfilled = false;
+          console.error('ERROR: Missing environment variable: ' + key);
+        }
+      
+        /**
+         * Convert all relative path to absolute path
+         */
+        if (key.indexOf(postfix, key.length - postfix.length) !== -1) {
+          var pathname = settings[key];
+          if (pathname.length && pathname[0] === '/') {
+            settings[key] = path.resolve(pathname);
+          } else {
+            settings[key] = root.resolve(pathname).path;
+          }
+        }
+      
+      }
+    }
+  
+    if (!fulfilled) {
+      console.error(`ERROR: Prerequisite environment variable is missing, exiting....`);
+      process.exit(2);
+    }
+    
+  }
+  
+  setSystemVariable(root, settings, env) {
+    // set home dir to root
+    settings['HOME_DIR'] = root.path;
+    settings['ENV'] = env;
   }
   
 }
