@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { agent } from 'agentframework';
 
-@agent('firectory')
+@agent('directory')
 export class Directory {
   
   private constructor(private _directory: string, private _permission: number) {
