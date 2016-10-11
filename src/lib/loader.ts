@@ -120,10 +120,10 @@ class Loader {
   
   resolveAbsolutePath(root, settings) {
     
-    var fulfilled = true;
+    let fulfilled = true;
   
-    var postfix = '_DIR';
-    for (var key in settings) {
+    const postfix = '_DIR';
+    for (const key in settings) {
       if (settings.hasOwnProperty(key)) {
       
         if (!IsUndefined(process.env[key])) {
@@ -138,7 +138,7 @@ class Loader {
          * Convert all relative path to absolute path
          */
         if (key.indexOf(postfix, key.length - postfix.length) !== -1) {
-          var pathname = settings[key];
+          const pathname = settings[key];
           if (pathname.length && pathname[0] === '/') {
             settings[key] = path.resolve(pathname);
           } else {
