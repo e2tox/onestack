@@ -16,7 +16,7 @@ fs.readdirSync(path.join(projectRoot, 'node_modules'))
 export default {
   target: 'node',
   entry: {
-    index: './src/lib/index.ts'
+    index: path.join(projectRoot, 'src/lib/index.ts')
   },
   output: {
     path: path.join(projectRoot, 'lib'),
