@@ -1,22 +1,7 @@
 {
   "name": "onestack",
-  "description": "OneStack Enterprise Server Platform",
-  "author": "Ling",
   "version": "2.1.0",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:e2tox/onestack.git"
-  },
-  "engines": {
-    "node": ">=4.0.0",
-    "npm": ">=2.0.0"
-  },
-  "files": [
-    "lib",
-    "README.md",
-    "LICENSE"
-  ],
+  "description": "OneStack Enterprise Server Platform",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -29,10 +14,28 @@
     "build": "npm run build:clean && npm run build:tsc",
     "build:clean": "rm -rf ./lib",
     "build:tsc": "node_modules/.bin/tsc -p tsconfig.release.json",
-    "build:webpack": "node_modules/.bin/webpack --config tools/webpack.config.ts",
+    "build:webpack": "node_modules/.bin/webpack --display-error-details --config tools/webpack.config.ts",
     "test-on-travis": "npm run lint && npm run test:coverage",
     "test-on-teamcity": "exit 1"
   },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://@github.com/e2tox/onestack.git"
+  },
+  "author": "Ling Zhang",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/e2tox/onestack/issues"
+  },
+  "homepage": "https://github.com/e2tox/onestack#readme",
   "dependencies": {
     "agentframework": "latest",
     "require-yaml": "latest",

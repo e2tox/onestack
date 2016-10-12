@@ -2,10 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "lib": [
-      "dom",
       "es2015",
-      "es2016",
-      "scripthost"
+      "es2016"
     ],
     "declaration": false,
     "module": "commonjs",
