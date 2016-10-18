@@ -19,13 +19,14 @@ export interface ILog {
 
 export class Log implements ILog {
 
-  protected constructor(private _app: string,
-                        private _transaction: string,
-                        private _code: string,
-                        private _level: LogLevel,
-                        private _message: string,
-                        private _timestamp: Date,
-                        private _context: any | null) {
+  protected constructor(
+    private _app: string,
+    private _transaction: string,
+    private _code: string,
+    private _level: LogLevel,
+    private _message: string,
+    private _timestamp: Date,
+    private _context: any | null) {
   }
 
   public get app(): string {

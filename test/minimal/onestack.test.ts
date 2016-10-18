@@ -7,20 +7,20 @@ describe('OneStack', () => {
 
     it('should not able to init on non-existing directory', () => {
       expect(function () {
-        app.init('/not-exist-directory')
+        app.init({ root: '/not-exist-directory' })
       }).toThrow();
     });
 
     it('should init to __dirname', () => {
-      app.init(__dirname)
+      app.init({ root: __dirname })
     });
-    
+
     it('should not able to init at root folder', () => {
       expect(function () {
         app.init()
       }).toThrow();
     });
-    
+
     it('should not able to init again', () => {
       expect(function () {
         app.init(__dirname)

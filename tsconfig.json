@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
-      "es2015",
       "es2016"
     ],
     "declaration": false,
     "module": "commonjs",
-    "removeComments": true,
+    "removeComments": false,
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "typeRoots": [
       "node_modules/@types/"
     ],
