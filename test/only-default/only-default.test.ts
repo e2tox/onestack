@@ -12,7 +12,7 @@ describe('TEST: only-default', () => {
   
   it('should able to init()', () => {
     const kernel = new Kernel();
-    expect(()=> {
+    expect(() => {
       kernel.init({ root: testRoot });
     }).toThrowError(`EACCES: permission denied, mkdir '/data'`);
     

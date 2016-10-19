@@ -12,7 +12,7 @@ describe('TEST: missing-settings-file', () => {
   
   it('should able to init()', () => {
     const kernel = new Kernel();
-    expect(()=> {
+    expect(() => {
       kernel.init({ root: testRoot });
     }).toThrowError(`Directory '${testRoot}/conf' is not exist`);
   });
