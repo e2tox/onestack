@@ -6,8 +6,9 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "start": "node_modules/.bin/nodemon --config tools/testmon.json && exit 0",
-    "test": "npm run lint && npm run test:coverage",
-    "cov": "npm run test:coverage",
+    "test": "npm run lint && npm run test:clean && npm run test:coverage",
+    "cov": "npm run test:clean && npm run test:coverage",
+    "test:clean": "rm -rf test/minimal/data",
     "test:unit": "node_modules/.bin/ts-node tools/jasmine.ts",
     "test:coverage": "TEST_PROPERTY=test node_modules/.bin/ts-node node_modules/.bin/istanbul cover --config=tools/istanbul.yml node_modules/.bin/jasmine JASMINE_CONFIG_PATH=tools/jasmine.full.json",
     "lint": "standard --pretty",
