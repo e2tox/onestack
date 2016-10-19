@@ -23,7 +23,7 @@ export class Kernel {
   public init(opts?: IKernelOptions): void {
     this._opts = new KernelOptions(opts);
     this._root = Directory.withReadPermission(this._opts.root);
-    this._settings = LoadSettings(this._root, this._opts.autoCreateDir);
+    this._settings = LoadSettings(this._root, this._opts.confDir, this._opts.autoCreateDir);
   }
 
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')

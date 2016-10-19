@@ -2,22 +2,25 @@ import { IsUndefined } from './utils/utils';
 
 export interface IKernelOptions {
   root?: string;
+  confDir?: string;
   autoCreateDir?: boolean;
 }
 
 export class KernelOptions implements IKernelOptions {
 
   root: string;
+  confDir: string;
   autoCreateDir: boolean;
 
   constructor(opts: IKernelOptions) {
-    if (IsUndefined(opts)) {
-      this.root = process.cwd();
-      this.autoCreateDir = true;
-    }
-    else {
-      this.root = opts.root || process.cwd();
-      this.autoCreateDir = IsUndefined(opts.autoCreateDir) ? true : !!opts.autoCreateDir;
+    this.root = process.cwd();
+    this.confDir = 'conf';
+    this.autoCreateDir = true;
+    
+    if (!IsUndefined(opts)) {
+      this.root = opts.root || this.root;
+      this.confDir = opts.confDir || this.confDir;
+      this.autoCreateDir = IsUndefined(opts.autoCreateDir) ? this.autoCreateDir : !!opts.autoCreateDir;
     }
   }
 

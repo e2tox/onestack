@@ -12,22 +12,42 @@ export class Directory {
     return Directory.resolve(process.cwd(), '.', fs.constants.R_OK);
   }
 
-  public static withReadPermission(directory: string, autoCreate?: boolean): Directory {
-    return Directory.resolve(process.cwd(), directory, fs.constants.R_OK, autoCreate);
+  public static withReadPermission(directory: string): Directory {
+    return Directory.resolve(process.cwd(), directory, fs.constants.R_OK);
   }
 
-  public static withReadWritePermission(directory: string, autoCreate?: boolean): Directory {
-    return Directory.resolve(process.cwd(), directory, fs.constants.R_OK | fs.constants.W_OK, autoCreate);
+  public static withReadWritePermission(directory: string): Directory {
+    return Directory.resolve(process.cwd(), directory, fs.constants.R_OK | fs.constants.W_OK);
   }
 
-  private static resolve(root: string, directory: string, permission: number, autoCreate?: boolean): Directory {
+  public static mkdir(dir: string, mode?: number) {
+    const currentPaths: Array<string> = dir.split(path.sep);
+    let n = 1;
+    while (n++ < currentPaths.length) {
+      const folder = currentPaths.slice(0, n).join(path.sep);
+      try {
+        fs.mkdirSync(folder, mode);
+      }
+      catch (err0) {
+        let stat;
+        try {
+          stat = fs.statSync(folder);
+        }
+        catch (err1) {
+          throw err0;
+        }
+        if (!stat.isDirectory()) {
+          throw new Error(`'${folder}' is not a directory`);
+        }
+      }
+    }
+    return dir;
+  }
+
+  private static resolve(root: string, directory: string, permission: number): Directory {
 
     // resolve directory from root
     directory = path.resolve(root, directory);
-
-    if (autoCreate) {
-      Directory.mkdir(directory);
-    }
 
     // must directory
     let stat;
@@ -60,43 +80,15 @@ export class Directory {
     return new Directory(directory, permission);
   }
 
-  public static mkdir(dir: string, mode?: number) {
-    const currentPaths: Array<string> = dir.split(path.sep);
-    let n = 1;
-    while (n++ < currentPaths.length) {
-      const folder = currentPaths.slice(0, n).join(path.sep);
-      try {
-        fs.mkdirSync(folder, mode);
-      }
-      catch (err0) {
-        switch (err0.code) {
-          case 'EEXIST':
-            break;
-          default:
-            var stat;
-            try {
-              stat = fs.statSync(folder);
-            }
-            catch (err1) {
-
-              throw err0;
-            }
-            if (!stat.isDirectory()) throw err0;
-            break;
-        }
-      }
-    }
-  }
-
   public get path(): string {
     return this._directory;
   }
 
-  public resolve(relativePath: string, autoCreateDir?: boolean): Directory {
+  public resolve(relativePath: string): Directory {
     if (path.isAbsolute(relativePath)) {
       throw new Error(`'${relativePath}' is not a relative path`);
     }
-    return Directory.resolve(this._directory, relativePath, this._permission, autoCreateDir);
+    return Directory.resolve(this._directory, relativePath, this._permission);
   }
 
   public file(relativeFilePath: string): File {
@@ -145,7 +137,6 @@ export class File {
       err.file = filePath;
       throw err;
     }
-
 
     return new File(filePath, permission);
   }

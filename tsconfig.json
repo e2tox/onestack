@@ -6,10 +6,13 @@
     ],
     "declaration": false,
     "module": "commonjs",
-    "removeComments": false,
     "moduleResolution": "node",
+    "newLine": "LF",
+    "removeComments": false,
     "experimentalDecorators": true,
     "sourceMap": true,
+    "outDir": "tmp",
+    "pretty": true,
     "typeRoots": [
       "node_modules/@types/"
     ],

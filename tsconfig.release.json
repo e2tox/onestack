@@ -18,7 +18,8 @@
     ],
     "types": [
       "jasmine",
-      "node"
+      "node",
+      "js-yaml"
     ]
   },
   "include": [
