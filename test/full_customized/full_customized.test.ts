@@ -7,8 +7,7 @@ describe('full_customized', () => {
 
   beforeAll(() => {
     // resolve from process.cwd()
-    testRoot = path.resolve('test/full_customized');
-    console.error('full_customized')
+    testRoot = path.resolve(__dirname);
   });
 
   it('should contains PORT number from full customized settings', () => {
