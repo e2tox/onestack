@@ -79,19 +79,19 @@ describe('Directory', () => {
         dir.file('./file-not-exists.txt');
       }).toThrowError(`File '${testRoot}/file-not-exists.txt' is not exist`)
     });
-    
+
     it('create dir at root', () => {
       expect(() => {
         Directory.mkdir('/test');
       }).toThrowError(`EACCES: permission denied, mkdir '/test'`)
     });
-    
+
     it('create dir at file path', () => {
       expect(() => {
         Directory.mkdir('/etc/hosts');
       }).toThrowError(`'/etc/hosts' is not a directory`)
     });
-    
+
     it('create dir at file path', () => {
       expect(() => {
         Directory.mkdir('/etc/hosts/test');

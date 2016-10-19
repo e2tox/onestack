@@ -3,15 +3,15 @@ import app from '../../src/lib'
 declare var __dirname: string;
 
 describe('OneStack - Minimal Tests', () => {
-  
+
   let testRoot: string;
-  
+
   beforeAll(() => {
     testRoot = path.resolve(__dirname);
   });
-  
+
   describe('#init', () => {
-    
+
     it('should init to __dirname', () => {
       app.init({ root: testRoot })
     });

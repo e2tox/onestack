@@ -11,8 +11,9 @@ HOST: '0.0.0.0'
 PORT:
 
 # dirs
-DATA_DIR: '/data'  # absolute path
-LOG_DIR: './logs'  # relative path to server.js
+DATA_DIR: /data:rw  # absolute path
+TEMPLATE_DIR: template:ro
+LOG_DIR: ./logs     # relative path to server.js
 
 ACCESS_KEY: 'This is access key'
 USER_PASSWORD: 'This is user password'

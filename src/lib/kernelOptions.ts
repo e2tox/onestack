@@ -16,7 +16,7 @@ export class KernelOptions implements IKernelOptions {
     this.root = process.cwd();
     this.confDir = 'conf';
     this.autoCreateDir = true;
-    
+
     if (!IsUndefined(opts)) {
       this.root = opts.root || this.root;
       this.confDir = opts.confDir || this.confDir;
