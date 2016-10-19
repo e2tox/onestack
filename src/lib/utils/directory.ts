@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { agent } from 'agentframework';
 
 export class Directory {
 
@@ -19,7 +18,7 @@ export class Directory {
     return Directory.resolve(process.cwd(), directory, fs.constants.R_OK | fs.constants.W_OK);
   }
 
-  public static mkdir(dir: string, mode?: number):boolean {
+  public static mkdir(dir: string, mode?: number): boolean {
     const currentPaths: Array<string> = dir.split(path.sep);
     let n = 1;
     let created = false;

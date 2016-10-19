@@ -11,13 +11,13 @@ describe('OneStack - Minimal Tests', () => {
   });
 
   describe('#init', () => {
-    
+
     it('should init to __dirname', () => {
-      expect(()=>{
+      expect(() => {
         app.init()
       }).toThrowError(`Directory '${process.cwd()}/conf' is not exist`);
     });
-    
+
     it('should init to __dirname', () => {
       app.init({ root: testRoot })
     });

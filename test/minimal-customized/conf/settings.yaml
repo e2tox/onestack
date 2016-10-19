@@ -12,5 +12,4 @@ PORT:
 
 # dirs
 DATA_DIR: '/data'  # absolute path
-LOG_DIR: '/logs'  # relative path to server.js
 

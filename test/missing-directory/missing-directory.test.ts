@@ -14,7 +14,7 @@ describe('TEST: missing-directory', () => {
     const kernel = new Kernel();
     expect(() => {
       kernel.init({ root: testRoot, autoCreateDir: false });
-    }).toThrowError(`Directory '${testRoot}/data' is not exist`)
+    }).toThrowError(`Directory '${testRoot}/logs' is not exist`)
   });
 
 });
