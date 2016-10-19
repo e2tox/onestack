@@ -1,7 +1,7 @@
 import * as path from 'path'
 import { Kernel } from '../../src/lib/kernel'
 
-describe('TEST: missing-settings-yaml', () => {
+describe('TEST: missing-environment-settings', () => {
   
   let testRoot: string;
   
@@ -14,7 +14,7 @@ describe('TEST: missing-settings-yaml', () => {
     const kernel = new Kernel();
     expect(()=> {
       kernel.init({ root: testRoot });
-    }).toThrowError(`Directory '${testRoot}/conf' is not exist`);
+    }).toThrowError(`ERROR: Prerequisite environment variable is missing, exiting....`);
   });
   
 });

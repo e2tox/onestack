@@ -1,8 +1,7 @@
-import * as fs from 'fs'
 import * as path from 'path'
 import { Kernel } from '../../src/lib/kernel'
 
-describe('TEST: missing-package-json', () => {
+describe('TEST: missing-settings-file', () => {
   
   let testRoot: string;
   
@@ -13,7 +12,9 @@ describe('TEST: missing-package-json', () => {
   
   it('should able to init()', () => {
     const kernel = new Kernel();
-    kernel.init({ root: testRoot });
+    expect(()=> {
+      kernel.init({ root: testRoot });
+    }).toThrowError(`Directory '${testRoot}/conf' is not exist`);
   });
   
 });

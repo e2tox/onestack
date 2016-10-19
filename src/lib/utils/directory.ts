@@ -20,13 +20,15 @@ export class Directory {
     return Directory.resolve(process.cwd(), directory, fs.constants.R_OK | fs.constants.W_OK);
   }
 
-  public static mkdir(dir: string, mode?: number) {
+  public static mkdir(dir: string, mode?: number):boolean {
     const currentPaths: Array<string> = dir.split(path.sep);
     let n = 1;
+    let created = false;
     while (n++ < currentPaths.length) {
       const folder = currentPaths.slice(0, n).join(path.sep);
       try {
         fs.mkdirSync(folder, mode);
+        created = true;
       }
       catch (err0) {
         let stat;
@@ -41,7 +43,7 @@ export class Directory {
         }
       }
     }
-    return dir;
+    return created;
   }
 
   private static resolve(root: string, directory: string, permission: number): Directory {

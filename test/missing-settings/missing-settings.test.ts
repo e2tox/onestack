@@ -1,8 +1,7 @@
-import * as fs from 'fs'
 import * as path from 'path'
 import { Kernel } from '../../src/lib/kernel'
 
-describe('TEST: missing-package-json', () => {
+describe('TEST: missing-settings', () => {
   
   let testRoot: string;
   

@@ -11,7 +11,7 @@ HOST: '0.0.0.0'
 PORT: 11023
 
 # dirs
-DATA_DIR: './data'  # absolute path
-LOG_DIR: './logs'  # relative path to server.js
+DATA_DIR: './data:rw'  # absolute path
+LOG_DIR: './logs:ro'  # relative path to server.js
 
 CUSTOM_SCRIPT: 'conf/production.js'

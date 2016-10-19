@@ -634,8 +634,8 @@ duplexer@~0.1.1:
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"
 
 duplexify@^3.2.0:
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-3.4.5.tgz#0e7e287a775af753bf57e6e7b7f21f183f6c3a53"
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-3.4.6.tgz#1e586a13028caf31d5144a059813f9b071fec557"
   dependencies:
     end-of-stream "1.0.0"
     inherits "^2.0.1"
@@ -2114,8 +2114,8 @@ source-list-map@~0.1.0:
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-0.1.6.tgz#e1e6f94f0b40c4d28dcf8f5b8766e0e45636877f"
 
 source-map-support@^0.4.0:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.4.tgz#0df5765a05a560c91bc8f8641cf79f2affc0322e"
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.5.tgz#4438df4219e1b3c7feb674614b4c67f9722db1e4"
   dependencies:
     source-map "^0.5.3"
 
@@ -2353,7 +2353,7 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.3.tgz#3da382f670f25ded78d7b3d1792119bca0b7132d"
 
-typescript-standard:
+typescript-standard@^0.3.5:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/typescript-standard/-/typescript-standard-0.3.5.tgz#d56011e2238c4b40289a616284d35423d7bd65ba"
   dependencies:
