@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { agent } from 'agentframework';
 
-@agent('directory')
 export class Directory {
 
   private constructor(private _directory: string, private _permission: number) {
@@ -102,7 +101,6 @@ export class Directory {
 
 }
 
-@agent('file')
 export class File {
 
   private constructor(private _file: string, private _permission: number) {
