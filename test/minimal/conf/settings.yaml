@@ -1,0 +1,6 @@
+---
+PORT:  80
+LOG_DIR: log
+LOG_CONSOLE: false
+LOG_FILE: false
+DATA_DIR: data/main

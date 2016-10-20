@@ -1,0 +1,3 @@
+---
+LOG_DIR: './logs'  # relative path to server.js
+

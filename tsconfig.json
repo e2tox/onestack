@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "es2016"
+    ],
+    "declaration": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "newLine": "LF",
+    "removeComments": false,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "outDir": "tmp",
+    "pretty": true,
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
+    "types": [
+      "jasmine",
+      "node",
+      "js-yaml"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.d.ts"
+  ]
+}
