@@ -5,9 +5,9 @@ import { ObjectEntries } from './utils/utils';
 import { LogLevel } from './log';
 import { IBasicSettings } from './settings';
 
-export class Loader {
+export class Loader<T extends IBasicSettings> {
 
-  private _settings: IBasicSettings;
+  private _settings: T;
 
   private constructor(private _env: string, private _root: Directory, private _conf: Directory) {
     this._settings = {
@@ -22,10 +22,10 @@ export class Loader {
       LOG_FILE_LEVEL: LogLevel.Warn,
       LOG_FILE_ROTATE_PERIOD: '1d',
       LOG_FILE_ROTATE_MAX: 30
-    };
-  }
+    } as T;
+  };
 
-  public static LoadSettings(root: Directory, confDir: string, autoCreateDir: boolean): IBasicSettings {
+  public static LoadSettings<T extends IBasicSettings>(root: Directory, confDir: string, autoCreateDir: boolean): T {
 
     console.log();
 
@@ -34,7 +34,7 @@ export class Loader {
      */
     const env = this.CheckEnvironment();
     const conf = root.resolve(confDir);
-    const loader = new Loader(env, root, conf);
+    const loader = new Loader<T>(env, root, conf);
 
     /**
      * Load default settings

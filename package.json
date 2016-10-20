@@ -1,6 +1,6 @@
 {
   "name": "onestack",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "OneStack Enterprise Server Platform",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

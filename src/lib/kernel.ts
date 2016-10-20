@@ -12,10 +12,10 @@ import { IBasicSettings } from './settings';
  * naming an agent using @gent
  */
 @agent('OneStack')
-export class Kernel extends EventEmitter {
+export class Kernel<T extends IBasicSettings> extends EventEmitter {
 
   private _root: Directory;
-  private _settings: IBasicSettings;
+  private _settings: T;
   private _logger: ILogger;
   private _opts: IKernelOptions;
 
@@ -23,16 +23,12 @@ export class Kernel extends EventEmitter {
     super()
   }
 
-  public static getInstance(): Kernel {
-    return new Kernel();
-  }
-
   @prerequisite('initialized', false, 'OneStack already initialized')
   @success('initialized', true)
   public init(opts?: IKernelOptions): void {
     this._opts = new KernelOptions(opts);
     this._root = Directory.withReadPermission(this._opts.root);
-    this._settings = Loader.LoadSettings(this._root, this._opts.confDir, this._opts.autoCreateDir);
+    this._settings = Loader.LoadSettings<T>(this._root, this._opts.confDir, this._opts.autoCreateDir);
     this._logger = Logger.createFromSettings(this._settings);
     this.emit('ready');
   }
@@ -48,7 +44,7 @@ export class Kernel extends EventEmitter {
   }
 
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
-  public get settings(): any {
+  public get settings(): T {
     return this._settings;
   }
 
