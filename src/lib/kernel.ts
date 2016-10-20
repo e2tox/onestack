@@ -1,18 +1,27 @@
+import { EventEmitter } from 'events'
 import { Directory } from './utils/directory'
-import { agent, success, prerequisite } from 'agentframework';
-import { LoadSettings } from './loader';
-import { IsUndefined } from './utils/utils';
-import { IKernelOptions, KernelOptions } from './kernelOptions';
+import { agent, success, prerequisite } from 'agentframework'
+import { Loader } from './loader'
+import { IsUndefined } from './utils/utils'
+import { IKernelOptions, KernelOptions } from './kernelOptions'
+import { Logger } from './logger'
+import { ILogger } from './log';
+import { IBasicSettings } from './settings';
 
 /**
  * naming an agent using @gent
  */
 @agent('OneStack')
-export class Kernel {
+export class Kernel extends EventEmitter {
 
   private _root: Directory;
-  private _settings: any;
+  private _settings: IBasicSettings;
+  private _logger: ILogger;
   private _opts: IKernelOptions;
+
+  constructor() {
+    super()
+  }
 
   public static getInstance(): Kernel {
     return new Kernel();
@@ -23,7 +32,9 @@ export class Kernel {
   public init(opts?: IKernelOptions): void {
     this._opts = new KernelOptions(opts);
     this._root = Directory.withReadPermission(this._opts.root);
-    this._settings = LoadSettings(this._root, this._opts.confDir, this._opts.autoCreateDir);
+    this._settings = Loader.LoadSettings(this._root, this._opts.confDir, this._opts.autoCreateDir);
+    this._logger = Logger.createFromSettings(this._settings);
+    this.emit('ready');
   }
 
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
@@ -52,6 +63,11 @@ export class Kernel {
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public has(key: string): boolean {
     return !IsUndefined(this._settings[key]);
+  }
+
+  @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
+  public get logger(): ILogger {
+    return this._logger;
   }
 
 }

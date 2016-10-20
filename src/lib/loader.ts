@@ -2,66 +2,77 @@ import * as path from 'path';
 import { parseYAML, parseJSON } from './utils/parser';
 import { Directory } from './utils/directory';
 import { ObjectEntries } from './utils/utils';
-
-export function LoadSettings(root: Directory, confDir: string, autoCreateDir: boolean) {
-
-  const loader = new Loader();
-
-  console.log();
-
-  /**
-   * Ensure NODE_ENV is present
-   */
-  const env = loader.checkEnvironment();
-  const conf = root.resolve(confDir);
-  const settings = {
-    LOG_DIR: 'logs'
-  };
-
-  /**
-   * Load default settings
-   */
-  loader.applyFileSettings(conf, settings, 'settings.yaml');
-
-  /**
-   * Validate NODE_ENV and path default settings with environment settings
-   */
-  loader.applyFileSettings(conf, settings, env + '.yaml');
-
-  /**
-   * Apply missing settings from environment
-   */
-  loader.applyEnvironmentSettings(conf, settings);
-
-  /**
-   * Load local environment settings
-   */
-  loader.applyFileSettings(conf, settings, env + '.local.yaml');
-
-  /**
-   * Load app version
-   */
-  loader.loadPackageVersion(root, settings);
-
-  /**
-   * This is the last chance to get mandatory configurations from environment variables.
-   */
-  loader.resolveAbsolutePath(root, settings, autoCreateDir);
-
-  /**
-   * Add system level settings
-   */
-  loader.setSystemVariable(root, settings, env);
-
-  console.log();
-
-  // freeze the settings
-  return Object.freeze(settings);
-}
+import { LogLevel } from './log';
+import { IBasicSettings } from './settings';
 
 export class Loader {
 
-  checkEnvironment() {
+  private _settings: IBasicSettings;
+
+  private constructor(private _env: string, private _root: Directory, private _conf: Directory) {
+    this._settings = {
+      NAME: 'app',
+      VERSION: '0.0.0',
+      ENV: _env,
+      HOME_DIR: _root.path,
+      LOG_DIR: 'logs',
+      LOG_CONSOLE: true,
+      LOG_CONSOLE_LEVEL: LogLevel.Debug,
+      LOG_FILE: true,
+      LOG_FILE_LEVEL: LogLevel.Warn,
+      LOG_FILE_ROTATE_PERIOD: '1d',
+      LOG_FILE_ROTATE_MAX: 30
+    };
+  }
+
+  public static LoadSettings(root: Directory, confDir: string, autoCreateDir: boolean): IBasicSettings {
+
+    console.log();
+
+    /**
+     * Ensure NODE_ENV is present
+     */
+    const env = this.CheckEnvironment();
+    const conf = root.resolve(confDir);
+    const loader = new Loader(env, root, conf);
+
+    /**
+     * Load default settings
+     */
+    loader.applyFileSettings('settings.yaml');
+
+    /**
+     * Validate NODE_ENV and path default settings with environment settings
+     */
+    loader.applyFileSettings(env + '.yaml');
+
+    /**
+     * Load local environment settings
+     */
+    loader.applyFileSettings(env + '.local.yaml');
+
+    /**
+     * Load app version
+     */
+    loader.applyPackageInfo();
+
+    /**
+     * Apply missing settings from environment
+     */
+    loader.applyEnvironmentSettings();
+
+    /**
+     * This is the last chance to get mandatory configurations from environment variables.
+     */
+    loader.resolveAbsolutePath(autoCreateDir);
+
+    console.log();
+
+    // freeze the settings
+    return Object.freeze(loader._settings);
+  }
+
+  public static CheckEnvironment(): string {
     if (!process.env['NODE_ENV']) {
       console.error('\x1b[33m', 'NODE_ENV is not defined! Using default production environment', '\x1b[0m');
       process.env['NODE_ENV'] = 'production';
@@ -72,13 +83,13 @@ export class Loader {
     return process.env['NODE_ENV'];
   }
 
-  applyFileSettings(root: Directory, settings: any, filename: string): boolean {
+  applyFileSettings(filename: string): boolean {
 
     let localSettingsFile;
     let environmentSettings;
 
     try {
-      localSettingsFile = root.file(filename);
+      localSettingsFile = this._conf.file(filename);
     }
     catch (err) {
       console.log(`WARN: Application settings file '${err.file}' is not found, ignoring...`);
@@ -101,21 +112,42 @@ export class Loader {
 
     const keys = [];
     for (let [key, value] of ObjectEntries(environmentSettings)) {
-      settings[key] = value;
+      this._settings[key] = value;
       keys.push(key);
     }
     console.log(`INFO: Applied ${keys.length} key(s) from '${localSettingsFile.path}'`);
     return true;
   }
 
-  applyEnvironmentSettings(root: Directory, settings: any) {
+  applyPackageInfo() {
+
+    let packageFile;
+
+    try {
+      packageFile = this._root.file('package.json');
+      try {
+        const pkg = parseJSON(packageFile);
+        this._settings.VERSION = pkg.version || this._settings.VERSION;
+        this._settings.NAME = pkg.name || this._settings.NAME;
+      }
+      catch (err) {
+        console.log(`WARN: Package file '${packageFile}' parsing error, ignoring...`);
+      }
+    }
+    catch (err) {
+      console.log(`WARN: Package file '${err.file}' is not found, ignoring...`);
+    }
+
+  }
+
+  applyEnvironmentSettings() {
 
     let fulfilled = true;
 
-    for (let [key, value] of ObjectEntries(settings)) {
+    for (let [key, value] of ObjectEntries(this._settings)) {
       if (process.env[key] != null) {
         console.log('Applying ' + key + ' from environment value `' + process.env[key] + '`');
-        settings[key] = process.env[key];
+        this._settings[key] = process.env[key];
       } else if (value == null) {
         fulfilled = false;
         console.error('ERROR: Missing environment variable: ' + key);
@@ -130,27 +162,7 @@ export class Loader {
 
   }
 
-  loadPackageVersion(root: Directory, settings: any) {
-
-    let packageFile;
-
-    try {
-      packageFile = root.file('package.json');
-      try {
-        const pkg = parseJSON(packageFile);
-        settings.VERSION = pkg.version;
-      }
-      catch (err) {
-        console.log(`WARN: Package file '${packageFile}' parsing error, ignoring...`);
-      }
-    }
-    catch (err) {
-      console.log(`WARN: Package file '${err.file}' is not found, ignoring...`);
-    }
-
-  }
-
-  resolveAbsolutePath(root: Directory, settings: any, autoCreateDir: boolean) {
+  resolveAbsolutePath(autoCreateDir: boolean) {
 
     const postfix = '_DIR';
 
@@ -159,7 +171,7 @@ export class Loader {
         'will be created automatically.');
     }
 
-    for (let [key, value] of ObjectEntries(settings)) {
+    for (let [key, value] of ObjectEntries(this._settings)) {
       /**
        * Convert all relative path to absolute path
        */
@@ -167,27 +179,21 @@ export class Loader {
         const dirs = value.split(':');
         const pathname = dirs[0];
         const permission = dirs[1] === 'rw' ? 'rw' : 'ro';
-        const absolutePathname = path.resolve(root.path, pathname);
+        const absolutePathname = path.resolve(this._root.path, pathname);
         // create dir if not exists
         if (autoCreateDir && Directory.mkdir(absolutePathname)) {
           console.log(`INFO: Created directory '${absolutePathname}'`);
         }
         // resolve this directory with permission
         if (permission === 'rw') {
-          settings[key] = Directory.withReadWritePermission(absolutePathname).path;
+          this._settings[key] = Directory.withReadWritePermission(absolutePathname).path;
         }
         else {
-          settings[key] = Directory.withReadPermission(absolutePathname).path;
+          this._settings[key] = Directory.withReadPermission(absolutePathname).path;
         }
       }
     }
 
-  }
-
-  setSystemVariable(root: Directory, settings: any, env: string) {
-    // set home dir to root
-    settings['HOME_DIR'] = root.path;
-    settings['ENV'] = env;
   }
 
 }

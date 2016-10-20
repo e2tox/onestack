@@ -37,4 +37,16 @@ describe('full_customized', () => {
     expect(kernel.has('PORT')).toBe(true);
   });
 
+  it('should able to log error', () => {
+    const kernel = new Kernel();
+    kernel.init({ root: testRoot });
+    kernel.logger.error(new Error('error'));
+  });
+
+  it('should able to log to console', () => {
+    const kernel = new Kernel();
+    kernel.init({ root: testRoot });
+    kernel.logger.warn('this is a warn log');
+  });
+
 });

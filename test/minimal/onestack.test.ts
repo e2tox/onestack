@@ -36,6 +36,10 @@ describe('OneStack - Minimal Tests', () => {
       expect(app.resolve('conf').path).toBe(path.resolve(testRoot, 'conf'));
     });
 
+    it('should able to get logger', () => {
+      expect(app.logger).toBeDefined();
+    });
+
   });
 
 });
