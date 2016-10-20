@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { Kernel } from '../../src/lib/kernel'
+import { Kernel } from '../../src/lib'
 
 describe('TEST: invalidate-package-json-file', () => {
 

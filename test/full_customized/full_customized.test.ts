@@ -1,5 +1,9 @@
 import * as path from 'path'
-import { Kernel } from '../../src/lib/kernel'
+import { Kernel, IBasicSettings } from '../../src/lib'
+
+interface IServerSettings extends IBasicSettings {
+  PORT: number
+}
 
 describe('full_customized', () => {
 
@@ -11,7 +15,7 @@ describe('full_customized', () => {
   });
 
   it('should contains PORT number from full customized settings', () => {
-    const kernel = new Kernel();
+    const kernel = new Kernel<IServerSettings>();
     kernel.init({ root: testRoot });
     expect(kernel.settings).toBeDefined();
     expect(kernel.settings.PORT).toBe(11023);
