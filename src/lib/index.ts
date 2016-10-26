@@ -17,3 +17,4 @@
 
 export { Kernel } from './kernel'
 export { IBasicSettings } from './settings';
+export { ILogger, LogLevel, LoggerOptions, Serializers, Stream } from './log'
