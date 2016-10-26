@@ -10,7 +10,6 @@ describe('OneStack - Minimal Tests', () => {
 
   beforeAll(() => {
     testRoot = path.resolve(__dirname);
-
   });
 
   describe('#init', () => {

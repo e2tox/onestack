@@ -9,3 +9,7 @@ TODO
  * ParameterDecorator
  
 通过重建prototype来实现类似proxy的功能
+
+### d
+
+ - Add _FILE

@@ -30,13 +30,13 @@ export class Logger {
       });
     }
 
-    if (!!settings.LOG_FILE) {
+    if (!!settings.LOG_ROTATE) {
       options.streams.push({
         type: 'rotating-file',
-        level: settings.LOG_FILE_LEVEL,
-        path: path.join(settings.LOG_DIR, 'app.log'),
-        period: settings.LOG_FILE_ROTATE_PERIOD,
-        count: settings.LOG_FILE_ROTATE_MAX
+        level: settings.LOG_ROTATE_LEVEL,
+        path: path.join(settings.LOG_DIR, 'rotate.log'),
+        period: settings.LOG_ROTATE_PERIOD,
+        count: settings.LOG_ROTATE_MAX
       })
     }
 

@@ -8,8 +8,8 @@ export interface IBasicSettings {
   LOG_DIR: string,
   LOG_CONSOLE: boolean,
   LOG_CONSOLE_LEVEL: LogLevel,
-  LOG_FILE: boolean,
-  LOG_FILE_LEVEL: LogLevel,
-  LOG_FILE_ROTATE_PERIOD: string,
-  LOG_FILE_ROTATE_MAX: number
+  LOG_ROTATE: boolean,
+  LOG_ROTATE_LEVEL: LogLevel,
+  LOG_ROTATE_PERIOD: string,
+  LOG_ROTATE_MAX: number
 }

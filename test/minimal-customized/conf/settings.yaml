@@ -12,4 +12,3 @@ PORT:
 
 # dirs
 DATA_DIR: '/data'  # absolute path
-

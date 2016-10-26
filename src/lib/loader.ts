@@ -1,6 +1,7 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import { parseYAML, parseJSON } from './utils/parser';
-import { Directory } from './utils/directory';
+import { Directory, File } from './utils/directory';
 import { ObjectEntries } from './utils/utils';
 import { LogLevel } from './log';
 import { IBasicSettings } from './settings';
@@ -18,10 +19,10 @@ export class Loader<T extends IBasicSettings> {
       LOG_DIR: 'logs',
       LOG_CONSOLE: true,
       LOG_CONSOLE_LEVEL: LogLevel.Debug,
-      LOG_FILE: true,
-      LOG_FILE_LEVEL: LogLevel.Warn,
-      LOG_FILE_ROTATE_PERIOD: '1d',
-      LOG_FILE_ROTATE_MAX: 30
+      LOG_ROTATE: true,
+      LOG_ROTATE_LEVEL: LogLevel.Warn,
+      LOG_ROTATE_PERIOD: '1d',
+      LOG_ROTATE_MAX: 30
     } as T;
   };
 
@@ -62,9 +63,14 @@ export class Loader<T extends IBasicSettings> {
     loader.applyEnvironmentSettings();
 
     /**
-     * This is the last chance to get mandatory configurations from environment variables.
+     * Resolve _DIR to absolute path
      */
     loader.resolveAbsolutePath(autoCreateDir);
+
+    /**
+     * Resolve _FILE to absolute path
+     */
+    loader.resolveAbsoluteFile();
 
     console.log();
 
@@ -175,7 +181,7 @@ export class Loader<T extends IBasicSettings> {
       /**
        * Convert all relative path to absolute path
        */
-      if (key.indexOf(postfix, key.length - postfix.length) !== -1) {
+      if (key.indexOf(postfix, key.length - postfix.length) !== -1 && value.split) {
         const dirs = value.split(':');
         const pathname = dirs[0];
         const permission = dirs[1] === 'rw' ? 'rw' : 'ro';
@@ -196,4 +202,30 @@ export class Loader<T extends IBasicSettings> {
 
   }
 
+  resolveAbsoluteFile() {
+    const postfix = '_FILE';
+
+    for (let [key, value] of ObjectEntries(this._settings)) {
+      /**
+       * Convert all relative file path to absolute path
+       */
+      console.log('file', key, value, key.indexOf(postfix));
+      if (key.indexOf(postfix, key.length - postfix.length) !== -1 && value.split) {
+
+        const dirs = value.split(':');
+        const pathname = dirs[0];
+        const permission = dirs[1];
+        if (permission === 'rw') {
+          this._settings[key] = File.resolve(this._root, pathname, fs.constants.R_OK | fs.constants.W_OK);
+        }
+        else if (permission === 'ro') {
+          this._settings[key] = File.resolve(this._root, pathname, fs.constants.R_OK);
+        }
+        else {
+          this._settings[key] = path.resolve(this._root.path, pathname);
+        }
+      }
+    }
+
+  }
 }
