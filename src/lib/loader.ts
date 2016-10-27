@@ -209,7 +209,6 @@ export class Loader<T extends IBasicSettings> {
       /**
        * Convert all relative file path to absolute path
        */
-      console.log('file', key, value, key.indexOf(postfix));
       if (key.indexOf(postfix, key.length - postfix.length) !== -1 && value.split) {
 
         const dirs = value.split(':');
