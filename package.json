@@ -1,38 +1,36 @@
 {
   "name": "onestack",
-  "version": "3.1.0",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "description": "OneStack Enterprise Server Platform",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "src/lib/index.ts",
   "scripts": {
     "start": "node_modules/.bin/nodemon --config tools/testmon.json && exit 0",
-    "test": "npm run lint && npm run test:clean && npm run test:coverage",
+    "test": "npm run lint && npm run build && npm run test:clean && npm run test:coverage",
     "cov": "npm run test:clean && npm run test:coverage",
     "test:clean": "rm -rf test/minimal/data",
     "test:unit": "node_modules/.bin/ts-node tools/jasmine.ts",
     "test:coverage": "TEST_PROPERTY=test node_modules/.bin/ts-node node_modules/.bin/istanbul cover --config=tools/istanbul.yml node_modules/.bin/jasmine JASMINE_CONFIG_PATH=tools/jasmine.full.json",
     "lint": "standard --pretty",
-    "build": "npm run build:clean && npm run build:tsc",
-    "build:clean": "rm -rf ./lib",
-    "build:tsc": "node_modules/.bin/tsc -p tsconfig.release.json",
-    "build:webpack": "node_modules/.bin/webpack --display-error-details --config tools/webpack.config.ts",
+    "build": "npm run build:tsc",
+    "build:tsc": "node_modules/.bin/tsc -p tsconfig.release.json --noEmit",
+    "release": "npm run release:clean && npm run release:tsc && npm run release:webpack && npm run release:npm",
+    "release:clean": "rm -rf ./release",
+    "release:tsc": "node_modules/.bin/tsc -p tsconfig.release.json && find release -type f -name '*.js*' -delete",
+    "release:webpack": "node_modules/.bin/webpack --display-error-details --config tools/webpack.config.ts",
+    "release:npm": "cp LICENSE ./release && cp README.md ./release && cp package.release.json ./release/package.json && cd ./release && npm publish",
     "test-on-travis": "npm run lint && npm run test:coverage",
     "test-on-teamcity": "exit 1"
   },
-  "files": [
-    "lib",
-    "README.md",
-    "LICENSE"
-  ],
   "repository": {
     "type": "git",
-    "url": "git+https://@github.com/e2tox/onestack.git"
+    "url": "git+https://github.com/e2tox/onestack.git"
   },
   "author": "Ling Zhang",
   "license": "Apache-2.0",
-  "engines": {
-    "node": ">=6.0.0"
-  },
   "bugs": {
     "url": "https://github.com/e2tox/onestack/issues"
   },
@@ -49,6 +47,9 @@
     "@types/js-yaml": "latest",
     "@types/node": "latest",
     "@types/webpack": "latest",
+    "babel-core": "latest",
+    "babel-loader": "latest",
+    "babel-preset-babili": "latest",
     "istanbul": "next",
     "jasmine": "latest",
     "jasmine-spec-reporter": "latest",

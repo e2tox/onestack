@@ -5,20 +5,20 @@
       "es2016"
     ],
     "declaration": true,
-    "module": "commonjs",
+    "module": "amd",
+    "removeComments": true,
     "moduleResolution": "node",
     "newLine": "LF",
-    "removeComments": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "outDir": "lib",
-    "pretty": true,
+    "outDir": "release/lib",
     "typeRoots": [
       "node_modules/@types/"
     ],
     "types": [
       "jasmine",
       "node",
+      "webpack",
       "js-yaml"
     ]
   },

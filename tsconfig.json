@@ -6,19 +6,17 @@
     ],
     "declaration": false,
     "module": "commonjs",
+    "removeComments": true,
     "moduleResolution": "node",
-    "newLine": "LF",
-    "removeComments": false,
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "outDir": "tmp",
-    "pretty": true,
+    "sourceMap": false,
     "typeRoots": [
       "node_modules/@types/"
     ],
     "types": [
       "jasmine",
       "node",
+      "webpack",
       "js-yaml"
     ]
   },

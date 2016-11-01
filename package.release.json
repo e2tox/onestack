@@ -1,0 +1,17 @@
+{
+  "name": "onestack",
+  "version": "3.1.2",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "description": "OneStack Enterprise Server Platform",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "author": "Ling Zhang",
+  "license": "Apache-2.0"
+}
