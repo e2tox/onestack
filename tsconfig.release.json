@@ -10,17 +10,8 @@
     "moduleResolution": "node",
     "newLine": "LF",
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "outDir": "release/lib",
-    "typeRoots": [
-      "node_modules/@types/"
-    ],
-    "types": [
-      "jasmine",
-      "node",
-      "webpack",
-      "js-yaml"
-    ]
+    "sourceMap": false,
+    "outDir": "release/lib"
   },
   "include": [
     "src/**/*.ts"
