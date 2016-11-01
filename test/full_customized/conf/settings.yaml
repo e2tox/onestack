@@ -13,6 +13,8 @@ PORT:
 # dirs
 DATA_DIR: /data  # absolute path
 TEMPLATE_DIR: template
+LOG_CONSOLE_LEVEL: trace
+LOG_ROTATE: false
 LOG_DIR: ./logs     # relative path to server.js
 
 ACCESS_KEY: 'This is access key'

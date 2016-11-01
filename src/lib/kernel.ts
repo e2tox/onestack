@@ -7,6 +7,7 @@ import { IKernelOptions, KernelOptions } from './kernelOptions'
 import { Logger } from './logger'
 import { ILogger } from './log';
 import { IBasicSettings } from './settings';
+import { Printer } from './printer';
 
 /**
  * naming an agent using @gent
@@ -26,10 +27,11 @@ export class Kernel<T extends IBasicSettings> extends EventEmitter {
   @prerequisite('initialized', false, 'OneStack already initialized')
   @success('initialized', true)
   public init(opts?: IKernelOptions): void {
-    this._opts = new KernelOptions(opts);
+    this._opts = KernelOptions.parse(opts);
     this._root = Directory.withReadPermission(this._opts.root);
-    this._settings = Loader.LoadSettings<T>(this._root, this._opts.confDir, this._opts.autoCreateDir);
+    this._settings = Loader.loadSettings<T>(this._root, this._opts.confDir, this._opts.autoCreateDir);
     this._logger = Logger.createFromSettings(this._settings);
+    Printer.print(this._settings, this._logger);
     this.emit('ready');
   }
 

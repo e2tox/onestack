@@ -1,6 +1,6 @@
 {
   "name": "onestack",
-  "version": "3.0.7",
+  "version": "3.1.0",
   "description": "OneStack Enterprise Server Platform",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -53,7 +53,6 @@
     "jasmine": "latest",
     "jasmine-spec-reporter": "latest",
     "nodemon": "latest",
-    "onestack": "latest",
     "ts-loader": "latest",
     "ts-node": "latest",
     "typescript-standard": "latest",

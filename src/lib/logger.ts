@@ -1,7 +1,8 @@
 import * as bunyan from 'bunyan'
 import * as path from 'path'
-import { LogLevel, ILogger } from './log'
+import { ILogger } from './log'
 import { IBasicSettings } from './settings';
+import { ConsoleTransformer } from './utils/console';
 
 export class Logger {
 
@@ -15,18 +16,18 @@ export class Logger {
     const options = {
       name: settings.NAME,
       streams: [],
-      serializers: bunyan.stdSerializers
+      serializers: {
+        err: bunyan.stdSerializers.err,
+        res: bunyan.stdSerializers.res,
+        req: bunyan.stdSerializers.req
+      }
     };
 
     // always log to stderr for errors
     if (!!settings.LOG_CONSOLE) {
       options.streams.push({
         level: settings.LOG_CONSOLE_LEVEL,
-        stream: process.stdout
-      });
-      options.streams.push({
-        level: LogLevel.Error,
-        stream: process.stderr
+        stream: new ConsoleTransformer()
       });
     }
 

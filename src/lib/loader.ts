@@ -26,14 +26,14 @@ export class Loader<T extends IBasicSettings> {
     } as T;
   };
 
-  public static LoadSettings<T extends IBasicSettings>(root: Directory, confDir: string, autoCreateDir: boolean): T {
+  public static loadSettings<T extends IBasicSettings>(root: Directory, confDir: string, autoCreateDir: boolean): T {
 
     console.log();
 
     /**
      * Ensure NODE_ENV is present
      */
-    const env = this.CheckEnvironment();
+    const env = this.checkEnvironment();
     const conf = root.resolve(confDir);
     const loader = new Loader<T>(env, root, conf);
 
@@ -78,7 +78,7 @@ export class Loader<T extends IBasicSettings> {
     return Object.freeze(loader._settings);
   }
 
-  public static CheckEnvironment(): string {
+  public static checkEnvironment(): string {
     if (!process.env['NODE_ENV']) {
       console.error('\x1b[33m', 'NODE_ENV is not defined! Using default production environment', '\x1b[0m');
       process.env['NODE_ENV'] = 'production';
