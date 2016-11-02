@@ -1,6 +1,6 @@
 import { LogLevel } from './log';
 
-export interface IBasicSettings {
+export interface IKernelSettings {
   NAME: string,
   VERSION: string,
   ENV: string,

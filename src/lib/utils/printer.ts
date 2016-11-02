@@ -1,4 +1,4 @@
-import { ILogger } from './log';
+import { ILogger } from '../log';
 
 export class Printer {
 

@@ -1,8 +1,8 @@
 import * as bunyan from 'bunyan'
 import * as path from 'path'
-import { ILogger } from './log'
-import { IBasicSettings } from './settings';
-import { ConsoleTransformer } from './utils/console';
+import { ILogger } from '../log'
+import { IKernelSettings } from '../kernelSettings';
+import { ConsoleTransformer } from './console';
 
 export class Logger {
 
@@ -11,7 +11,7 @@ export class Logger {
    * @param settings
    * @returns {Logger}
    */
-  public static createFromSettings(settings: IBasicSettings): ILogger {
+  public static createFromSettings(settings: IKernelSettings): ILogger {
 
     const options = {
       name: settings.NAME,

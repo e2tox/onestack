@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseYAML, parseJSON } from './utils/parser';
-import { Directory, File } from './utils/directory';
-import { ObjectEntries } from './utils/utils';
-import { LogLevel } from './log';
-import { IBasicSettings } from './settings';
+import { parseYAML, parseJSON } from './parser';
+import { Directory, File } from './directory';
+import { ObjectEntries } from './utils';
+import { LogLevel } from '../log';
+import { IKernelSettings } from '../kernelSettings';
 
-export class Loader<T extends IBasicSettings> {
+export class Loader<T extends IKernelSettings> {
 
   private _settings: T;
 
@@ -26,7 +26,7 @@ export class Loader<T extends IBasicSettings> {
     } as T;
   };
 
-  public static loadSettings<T extends IBasicSettings>(root: Directory, confDir: string, autoCreateDir: boolean): T {
+  public static loadSettings<T extends IKernelSettings>(root: Directory, confDir: string, autoCreateDir: boolean): T {
 
     console.log();
 

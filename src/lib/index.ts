@@ -15,6 +15,6 @@
 //   global[key] = new Kernel<T>(); // Object.freeze(kernel); - this will break istanbul test
 // }
 
-export { Kernel } from './kernel'
-export { IBasicSettings } from './settings';
+export { Kernel, IKernelSettings } from './kernel'
+export { Server, IServerSettings } from './server'
 export { ILogger, LogLevel, LoggerOptions, Serializers, Stream } from './log'

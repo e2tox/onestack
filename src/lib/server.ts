@@ -1,5 +1,6 @@
 import { Kernel } from './kernel';
-import { IServerSettings } from './server/settings';
+import { IServerSettings } from './serverSettings';
+export { IServerSettings } from './serverSettings';
 import { prerequisite, agent } from 'agentframework';
 
 /**

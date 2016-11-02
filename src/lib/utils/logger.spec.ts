@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { Kernel } from './kernel';
-import { ILogger } from './log';
+import { Kernel } from '../kernel';
+import { ILogger } from '../log';
 
 describe('Logger', () => {
 

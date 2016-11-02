@@ -1,19 +1,20 @@
 import { EventEmitter } from 'events'
 import { Directory } from './utils/directory'
 import { agent, success, prerequisite } from 'agentframework'
-import { Loader } from './loader'
+import { Loader } from './utils/loader'
 import { IsUndefined } from './utils/utils'
 import { IKernelOptions, KernelOptions } from './kernelOptions'
-import { Logger } from './logger'
+import { Logger } from './utils/logger'
 import { ILogger } from './log';
-import { IBasicSettings } from './settings';
-import { Printer } from './printer';
+import { Printer } from './utils/printer';
+import { IKernelSettings } from './kernelSettings';
+export { IKernelSettings } from './kernelSettings';
 
 /**
  * naming an agent using @gent
  */
 @agent('OneStack')
-export class Kernel<T extends IBasicSettings> extends EventEmitter {
+export class Kernel<T extends IKernelSettings> extends EventEmitter {
   
   private _root: Directory;
   private _settings: T;
