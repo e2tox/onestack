@@ -22,19 +22,19 @@ export function implementation() {
  * Interceptor for service calls
  */
 class ServiceAttribute implements IAttribute, IInterceptor {
-  
+
   getInterceptor(): IInterceptor {
     return this;
   }
-  
+
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-    
+
     // make parameters more friendly
     const call = parameters[0];
-    const expandedParameters = Object.getOwnPropertyNames(call.request).map(name=>call.request[name]);
+    const expandedParameters = Object.getOwnPropertyNames(call.request).map(name => call.request[name]);
     expandedParameters.push(call.metadata);
     const res = invocation.invoke(expandedParameters);
-    
+
     if (parameters.length === 1) {
       if (res instanceof Stream || res.pipe) {
         const stream = res as Stream;
@@ -57,7 +57,7 @@ class ServiceAttribute implements IAttribute, IInterceptor {
         throw new TypeError('Implementation must return a Promise');
       }
     }
-    
+
     // not used by grpc, for unit test code which run locally.
     return res;
   }

@@ -12,12 +12,12 @@ export class Server<T extends IServerSettings> extends Kernel<T> {
   constructor() {
     super();
   }
-  
+
   ////////////// Domain ////////////////
   @prerequisite('initialized', false, 'OneStack not initialized. Please call init() first!')
   start(): void {
     this.init();
     console.log(this.settings);
   }
-  
+
 }

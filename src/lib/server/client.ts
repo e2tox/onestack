@@ -16,14 +16,14 @@ const TIMEOUT_PROPERTY_KEY = Symbol('service.client.timeout');
 const METADATA_PROPERTY_KEY = Symbol('service.client.metadata');
 
 export class ServiceClient {
-  
+
   constructor(private port: string) {
   }
-  
+
   get metadata(): Metadata {
     return Reflect.get(this, METADATA_PROPERTY_KEY) as Metadata;
   }
-  
+
 }
 
 /**
@@ -35,25 +35,25 @@ export function client(identifier: string) {
 }
 
 export class ClientAgentAttribute extends AgentAttribute {
-  
+
   constructor(identifier: string, private searchDir: string) {
     super(identifier);
   }
-  
+
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-    
+
     // call original constructor
     const agent = super.intercept(invocation, parameters);
-    
+
     // parameters[0] is port
     const client = Builder.BuildProtocolClient(parameters[0], this.identifier, this.searchDir);
-    
+
     Reflect.set(agent, CLIENT_PROPERTY_KEY, client);
     Reflect.set(agent, METADATA_PROPERTY_KEY, new Metadata());
-    
+
     return agent;
   }
-  
+
 }
 
 /**
@@ -64,18 +64,18 @@ export function timeout(timeout: number) {
 }
 
 export class TimeoutAttribute implements IAttribute, IInterceptor {
-  
+
   constructor(private _timeout: number = 30000) {
   }
-  
+
   get timeout(): number {
     return this._timeout;
   }
-  
+
   getInterceptor(): IInterceptor {
     return this;
   }
-  
+
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
     const agent = invocation.invoke(parameters);
     Reflect.set(agent, TIMEOUT_PROPERTY_KEY, this._timeout);
@@ -91,16 +91,16 @@ export function method(...parameterNames) {
 }
 
 export class MethodAttribute implements IAttribute, IInterceptor {
-  
+
   constructor(private _parameterNames: Array<string>) {
   }
-  
+
   getInterceptor(): IInterceptor {
     return this;
   }
-  
+
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-    
+
     const client = Reflect.get(invocation.target, CLIENT_PROPERTY_KEY);
     const timeout = Reflect.get(invocation.target, TIMEOUT_PROPERTY_KEY) as number;
     const metadata = Reflect.get(invocation.target, METADATA_PROPERTY_KEY) as Metadata;
@@ -112,15 +112,15 @@ export class MethodAttribute implements IAttribute, IInterceptor {
     const options = {
       deadline: Date.now() + timeout // 10 sec
     };
-    
+
     // convert method parameter to object
     Array.from(parameters).map((v, k) => {
       innerParameter[parameterNames[k]] = v;
     });
-    
+
     // TODO: need check new implementation if upgrade to new gRPC library
     if (shouldReplyPromise) {
-      
+
       // create promise and bind to below callback
       let callback;
       const promise = new Promise(function (resolve, reject) {
@@ -131,11 +131,11 @@ export class MethodAttribute implements IAttribute, IInterceptor {
           return resolve(value);
         }
       });
-      
+
       // gRPC will got error if we put callback at rpc of stream response
       // so we need check targetFunction.length.
       Reflect.apply(targetFunction, client, [innerParameter, metadata, options, callback]);
-      
+
       // return the promise we created
       return promise;
     }
@@ -156,7 +156,7 @@ export class MethodAttribute implements IAttribute, IInterceptor {
 function parseFunctionArguments(func) {
   // First match everything inside the function argument params.
   var args = func.toString().match(/\.*?\(([^)]*)\)/)[1];
-  
+
   // Split the arguments string into an array comma delimited.
   return args.split(',').map(function (arg) {
     // Ensure no inline comments are parsed and trim the whitespace.

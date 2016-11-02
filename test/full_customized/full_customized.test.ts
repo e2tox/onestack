@@ -1,7 +1,7 @@
 import * as path from 'path'
-import { Kernel, IBasicSettings } from '../../src/lib'
+import { Kernel, IKernelSettings } from '../../src/lib'
 
-interface IServerSettings extends IBasicSettings {
+interface IServerSettings extends IKernelSettings {
   PORT: number
 }
 

@@ -1,6 +1,6 @@
-import { Kernel, IBasicSettings } from '../../src/lib'
+import { Kernel, IKernelSettings } from '../../src/lib'
 
-interface IOAuthSettings extends IBasicSettings {
+interface IOAuthSettings extends IKernelSettings {
   GOOGLE_OAUTH_KEY: string
   GOOGLE_OAUTH_PASSWORD: string
 }
