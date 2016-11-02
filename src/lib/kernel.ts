@@ -14,16 +14,16 @@ import { Printer } from './printer';
  */
 @agent('OneStack')
 export class Kernel<T extends IBasicSettings> extends EventEmitter {
-
+  
   private _root: Directory;
   private _settings: T;
   private _logger: ILogger;
   private _opts: IKernelOptions;
-
+  
   constructor() {
     super()
   }
-
+  
   @prerequisite('initialized', false, 'OneStack already initialized')
   @success('initialized', true)
   public init(opts?: IKernelOptions): void {
@@ -34,22 +34,22 @@ export class Kernel<T extends IBasicSettings> extends EventEmitter {
     Printer.print(this._settings, this._logger);
     this.emit('ready');
   }
-
+  
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public get root(): Directory {
     return this._root;
   }
-
+  
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public resolve(relativePath = ''): Directory {
     return this._root.resolve(relativePath);
   }
-
+  
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public get settings(): T {
     return this._settings;
   }
-
+  
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public get(key: string): boolean {
     if (IsUndefined(this._settings[key])) {
@@ -57,15 +57,15 @@ export class Kernel<T extends IBasicSettings> extends EventEmitter {
     }
     return this._settings[key];
   }
-
+  
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public has(key: string): boolean {
     return !IsUndefined(this._settings[key]);
   }
-
+  
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')
   public get logger(): ILogger {
     return this._logger;
   }
-
+  
 }
