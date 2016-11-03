@@ -4,8 +4,8 @@ import * as path from 'path'
 
 export class Builder {
 
-  private static ProtocolFiles: Set<string> = new Set<string>();
-  static Protocols = {};
+  static protocols = {};
+  private static files: Set<string> = new Set<string>();
 
   /**
    * Load protocol from file
@@ -36,15 +36,15 @@ export class Builder {
       if (stats && stats.isFile()) {
 
         // only load one time for one protocol file
-        if (!this.ProtocolFiles.has(file)) {
+        if (!this.files.has(file)) {
           const protocol = grpc.load(file);
-          Object.assign(this.Protocols, protocol);
-          this.ProtocolFiles.add(file);
+          Object.assign(this.protocols, protocol);
+          this.files.add(file);
         }
 
         // get service object from identifier
         const ns = identifier.split('.');
-        let current = this.Protocols;
+        let current = this.protocols;
         for (let i = 0; i < ns.length; i++) {
           current = current[ns[i]];
           if (!current) {
@@ -77,5 +77,3 @@ export class Builder {
   }
 
 }
-
-

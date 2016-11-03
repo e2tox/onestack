@@ -16,13 +16,15 @@ export { IKernelSettings } from './kernelSettings';
 @agent('OneStack')
 export class Kernel<T extends IKernelSettings> extends EventEmitter {
 
+  protected _id: number;
   private _root: Directory;
   private _settings: T;
   private _logger: ILogger;
   private _opts: IKernelOptions;
 
   constructor() {
-    super()
+    super();
+    this._id = Date.now();
   }
 
   @prerequisite('initialized', false, 'OneStack already initialized')
@@ -30,10 +32,9 @@ export class Kernel<T extends IKernelSettings> extends EventEmitter {
   public init(opts?: IKernelOptions): void {
     this._opts = KernelOptions.parse(opts);
     this._root = Directory.withReadPermission(this._opts.root);
-    this._settings = Loader.loadSettings<T>(this._root, this._opts.confDir, this._opts.autoCreateDir);
+    this._settings = Loader.loadSettings<T>(this._root, this._opts.confDir);
     this._logger = Logger.createFromSettings(this._settings);
-    Printer.print(this._settings, this._logger);
-    this.emit('ready');
+    Printer.printSettings<T>(this._settings, this._logger);
   }
 
   @prerequisite('initialized', true, 'OneStack not initialized. Please call init() first!')

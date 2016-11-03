@@ -1,5 +1,15 @@
 {
   "exec": "npm run test:unit",
-  "ext": "spec.ts",
-  "watch" : "./src"
+  "ext": "spec.ts test.ts json yaml",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "events": {
+    "restart": "echo 'FILE: '$FILENAME' was changed'"
+  },
+  "watch": [
+    "src",
+    "test",
+    "tools"
+  ]
 }

@@ -5,7 +5,7 @@ import {
 import { Stream } from 'stream';
 
 /**
- * an method
+ * an methodstorage.service.ts
  */
 export function service(identifier: string) {
   return decorateClass(new AgentAttribute(identifier));

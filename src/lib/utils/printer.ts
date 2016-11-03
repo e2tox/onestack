@@ -1,19 +1,23 @@
 import { ILogger } from '../log';
+import { IKernelSettings } from '../kernelSettings';
 
 export class Printer {
 
-  static print(settings: any, logger: ILogger): void {
+  static printSettings<T extends IKernelSettings>(settings: T, logger: ILogger): void {
 
+    if (!settings.PRINT_SETTINGS) {
+      return;
+    }
     logger.info('Active configuration properties:');
+
     Object.getOwnPropertyNames(settings).map(key => {
       return {
         key: key,
         value: this.sensitive(key) ? this.mask(settings[key]) : settings[key]
       }
     }).forEach(pair => {
-      logger.info(pair.key, '=', pair.value);
+      logger.info('  ', pair.key, '=', pair.value);
     });
-
   }
 
   static sensitive(key: string) {

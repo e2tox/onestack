@@ -3,7 +3,6 @@ import * as path from 'path';
 import { parseYAML, parseJSON } from './parser';
 import { Directory, File } from './directory';
 import { ObjectEntries } from './utils';
-import { LogLevel } from '../log';
 import { IKernelSettings } from '../kernelSettings';
 
 export class Loader<T extends IKernelSettings> {
@@ -15,18 +14,20 @@ export class Loader<T extends IKernelSettings> {
       NAME: 'app',
       VERSION: '0.0.0',
       ENV: _env,
+      PRINT_SETTINGS: true,
+      AUTO_CREATE_DIRECTORY: true,
       HOME_DIR: _root.path,
       LOG_DIR: 'logs',
       LOG_CONSOLE: true,
-      LOG_CONSOLE_LEVEL: LogLevel.Debug,
+      LOG_CONSOLE_LEVEL: 'debug',
       LOG_ROTATE: true,
-      LOG_ROTATE_LEVEL: LogLevel.Warn,
+      LOG_ROTATE_LEVEL: 'warn',
       LOG_ROTATE_PERIOD: '1d',
       LOG_ROTATE_MAX: 30
     } as T;
   };
 
-  public static loadSettings<T extends IKernelSettings>(root: Directory, confDir: string, autoCreateDir: boolean): T {
+  public static loadSettings<T extends IKernelSettings>(root: Directory, confDir: string): T {
 
     console.log();
 
@@ -65,7 +66,7 @@ export class Loader<T extends IKernelSettings> {
     /**
      * Resolve _DIR to absolute path
      */
-    loader.resolveAbsolutePath(autoCreateDir);
+    loader.resolveAbsolutePath();
 
     /**
      * Resolve _FILE to absolute path
@@ -168,9 +169,10 @@ export class Loader<T extends IKernelSettings> {
 
   }
 
-  resolveAbsolutePath(autoCreateDir: boolean) {
+  resolveAbsolutePath() {
 
     const postfix = '_DIR';
+    const autoCreateDir = this._settings.AUTO_CREATE_DIRECTORY;
 
     if (autoCreateDir) {
       console.log('WARN: Auto create directory is ON, all missing directory in the configuration ' +

@@ -1,6 +1,6 @@
 import { IKernelSettings } from './kernelSettings';
 
-export interface IServerSettings extends IKernelSettings {
+export interface IEngineSettings extends IKernelSettings {
   HOST: string
   PORT: number
 }

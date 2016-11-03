@@ -16,5 +16,5 @@
 // }
 
 export { Kernel, IKernelSettings } from './kernel'
-export { Server, IServerSettings } from './server'
+export { Engine, IEngineSettings } from './engine'
 export { ILogger, LogLevel, LoggerOptions, Serializers, Stream } from './log'

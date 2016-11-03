@@ -92,7 +92,7 @@ export function method(...parameterNames) {
 
 export class MethodAttribute implements IAttribute, IInterceptor {
 
-  constructor(private _parameterNames: Array<string>) {
+  constructor(private _params: Array<string>) {
   }
 
   getInterceptor(): IInterceptor {
@@ -105,9 +105,10 @@ export class MethodAttribute implements IAttribute, IInterceptor {
     const timeout = Reflect.get(invocation.target, TIMEOUT_PROPERTY_KEY) as number;
     const metadata = Reflect.get(invocation.target, METADATA_PROPERTY_KEY) as Metadata;
     const targetFunction = Reflect.get(client, invocation.method.name);
-    // in current release of gRPC. targetFunction.length === 3 mean reply stream response and length === 4 means reply Promise
+    // in current release of gRPC. targetFunction.length === 3 mean reply stream response
+    // and length === 4 means reply Promise
     const shouldReplyPromise = targetFunction.length === 4;
-    const parameterNames = !this._parameterNames.length ? parseFunctionArguments(invocation.method) : this._parameterNames;
+    const parameterNames = !this._params.length ? parseFunctionArguments(invocation.method) : this._params;
     const innerParameter = {};
     const options = {
       deadline: Date.now() + timeout // 10 sec
@@ -155,7 +156,7 @@ export class MethodAttribute implements IAttribute, IInterceptor {
  */
 function parseFunctionArguments(func) {
   // First match everything inside the function argument params.
-  var args = func.toString().match(/\.*?\(([^)]*)\)/)[1];
+  const args = func.toString().match(/\.*?\(([^)]*)\)/)[1];
 
   // Split the arguments string into an array comma delimited.
   return args.split(',').map(function (arg) {

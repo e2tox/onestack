@@ -15,7 +15,7 @@ describe('Kernel', () => {
     it('call kernel.init() without conf folder', () => {
       const kernel = new Kernel();
       expect(() => {
-        kernel.init({ autoCreateDir: false });
+        kernel.init();
       }).toThrow(new Error(`Directory '${process.cwd()}/conf' is not exist`));
     });
 

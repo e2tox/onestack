@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package onestack.test.services;
+
+service EchoService {
+  rpc echo(Message) returns (Message) {}
+  rpc echoStream(Message) returns (stream Message) {}
+}
+
+message Message {
+  required string content = 1;
+}

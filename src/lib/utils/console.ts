@@ -1,13 +1,28 @@
-import { Transform } from 'stream';
+import { PassThrough } from 'stream';
 
-export class ConsoleTransformer extends Transform {
+export class ConsoleTransformer extends PassThrough {
 
   private formatter: ConsoleFormatter;
 
   constructor() {
     super({ objectMode: true });
     this.formatter = new ConsoleFormatter();
-    this.pipe(process.stdout);
+
+    // NOTE: MEMORY LEAK POINT:
+    // stream.pipe(stream) will add a reference of current stream object to second stream
+    // so this stream will never able to release because the reference is hold by second stream which is global object.
+    // changing to GOOD code will overcome this memory leak issue
+    //
+    // BAD:
+    // this.pipe(process.stdout)
+    // end of BAD
+    //
+    // GOOD
+    this.on('data', (data) => {
+      process.stdout.write(data);
+    });
+    // end of GOOD
+
   }
 
   _transform(data: string, enc: string, next: Function) {
@@ -19,7 +34,7 @@ export class ConsoleTransformer extends Transform {
 
 export class ConsoleFormatter {
 
-  private colors = {
+  private static colors = {
     'bold': [1, 22],
     'italic': [3, 23],
     'underline': [4, 24],
@@ -44,6 +59,11 @@ export class ConsoleFormatter {
     60: ['FATAL', 'red']       // FATAL
   };
 
+  public static stylize(text: string, color: string = 'white'): string {
+    const codes = ConsoleFormatter.colors[color];
+    return `\x1B[${codes[0]}m${text}\x1B[${codes[1]}m`;
+  }
+
   public format(data: any): string {
 
     const details = [];
@@ -63,15 +83,10 @@ export class ConsoleFormatter {
 
     this.applyDetails(this.extractCustomDetails(data), details, extras);
 
-    const prettyExtras = !extras.length ? '' : this.stylize(' (' + extras.join(', ') + ')', 'cyan');
-    const prettyDetails = !details.length ? '' : this.stylize(details.join('\n\t--\n') + '\n', 'grey');
+    const prettyExtras = !extras.length ? '' : ConsoleFormatter.stylize(' (' + extras.join(', ') + ')', 'cyan');
+    const prettyDetails = !details.length ? '' : ConsoleFormatter.stylize(details.join('\n\t--\n') + '\n', 'grey');
 
     return `[${time}] ${level}: ${msg}${prettyExtras}\n${prettyDetails}`;
-  }
-
-  private stylize(text: string, color: string = 'white'): string {
-    const codes = this.colors[color];
-    return `\x1B[${codes[0]}m${text}\x1B[${codes[1]}m`;
   }
 
   private indent(text: string) {
@@ -81,16 +96,16 @@ export class ConsoleFormatter {
   private extractTime(data) {
     const time = data.time;
     if (time[10] === 'T') {
-      return this.stylize(time.substr(11));
+      return ConsoleFormatter.stylize(time.substr(11));
     }
     else {
-      return this.stylize(time);
+      return ConsoleFormatter.stylize(time);
     }
   }
 
   private extractLevel(data) {
     const level = this.levels[data.level];
-    return this.stylize(level[0], level[1]);
+    return ConsoleFormatter.stylize(level[0], level[1]);
   }
 
   private isSingleLineMsg(data) {
