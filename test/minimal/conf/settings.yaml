@@ -4,7 +4,7 @@ LOG_DIR: log
 LOG_CONSOLE: false
 LOG_ROTATE: false
 DATA_DIR: data/main
-
+PRINT_SETTINGS: false
 CONFIG_FILE: 'conf/settings.yaml'
 CONFIG_RO_FILE: 'conf/settings.yaml:ro'
 CONFIG_RW_FILE: 'conf/settings.yaml:rw'

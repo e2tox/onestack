@@ -3,9 +3,7 @@ export function IsUndefined(x: any): boolean {
 }
 
 export function* ObjectEntries(obj) {
-  if (obj) {
-    for (let key of Object.keys(obj)) {
-      yield [key, obj[key]];
-    }
+  for (let key of Object.keys(obj)) {
+    yield [key, obj[key]];
   }
 }

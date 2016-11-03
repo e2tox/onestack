@@ -42,9 +42,6 @@ export class Engine<T extends IEngineSettings> extends Kernel<T> implements IDis
   @conditional('started', true)
   public stop(callback?: Function) {
     this._server.tryShutdown((err) => {
-      if (err) {
-        this.logger.error(err, 'Error when stop engine');
-      }
       if (!IsUndefined(callback)) {
         callback(err);
       }
@@ -73,13 +70,13 @@ export class Engine<T extends IEngineSettings> extends Kernel<T> implements IDis
       .map(a => (a as AgentAttribute).identifier);
 
     if (!identifiers.length) {
-      throw new TypeError(`${serviceType} is not a service`);
+      throw new TypeError(`${serviceType.name} is not a service`);
     }
 
     // one agent may implement multiple services
     identifiers.forEach((identifier: string) => {
       if (this._services.has(identifier)) {
-        console.log(`Duplicate service identifier: ${identifier}`);
+        throw new TypeError(`Duplicate service identifier: ${identifier}`);
       }
       else {
         // load protocol
