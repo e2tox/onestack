@@ -7,8 +7,15 @@ export class EchoService implements IEchoService {
 
   @implementation()
   public echo(content: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       resolve(`Hello, ${content}`);
+    });
+  }
+
+  @implementation()
+  public echoError(content: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      reject(new Error('not allowed'));
     });
   }
 

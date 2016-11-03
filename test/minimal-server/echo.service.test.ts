@@ -3,8 +3,10 @@ import { Engine } from '../../src/lib/engine';
 import { IEngineSettings } from '../../src/lib/engineSettings';
 import { EchoService } from './services/echo.service';
 import * as path from 'path';
+import { Echo2Service } from './services/echo2.service';
+import { Echo3Service } from './services/echo3.service';
 
-describe('engine', () => {
+describe('echo service', () => {
 
   let testRoot: string;
 
@@ -13,50 +15,96 @@ describe('engine', () => {
     testRoot = path.resolve('test/minimal-server');
   });
 
-  describe('# should able to', () => {
+  describe('engine', () => {
 
-    it('start / stop engine', () => {
-      const engine = new Engine({ root: testRoot });
-      engine.start();
-      process.on('warning', e => console.warn(e.stack));
-      engine.stop();
-      engine.dispose(true);
+    let engine: Engine<IEngineSettings>;
+    const echoServiceNs = 'onestack.test.services';
+
+    beforeEach(() => {
+      engine = new Engine({ root: testRoot });
     });
 
-    it('add service to engine', () => {
-      const engine = new Engine({ root: testRoot });
-      engine.addService(EchoService, testRoot);
-      engine.start();
-      engine.stop();
+    afterEach(() => {
       engine.dispose(true);
-    })
+      engine = null;
+    });
+
+    it('add non-exists service', () => {
+      expect(() => {
+        engine.addService(Echo2Service, testRoot);
+      }).toThrowError(`Service '${echoServiceNs}.Echo2Service' not found in protocol file: ` +
+      `'${testRoot}/protos/${echoServiceNs}.proto'`);
+    });
 
   });
 
   describe('client', () => {
 
     let originalTimeout;
-    let testRoot: string;
     let engine: Engine<IEngineSettings>;
 
-    beforeAll(() => {
+    beforeEach(() => {
       originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
-      // resolve from process.cwd()
-      testRoot = __dirname;
       engine = new Engine({ root: testRoot });
-      engine.addService(EchoService, testRoot);
-      engine.start();
     });
 
-    afterAll(() => {
+    afterEach(() => {
       engine.stop();
       engine.dispose(true);
+      engine = null;
       jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it('echo', (done) => {
+    it('server error', (done) => {
+      engine.addService(Echo3Service, testRoot);
+      engine.start();
+      const client = new EchoServiceClient(engine.port);
+      const response = client.echoStream('get error');
+
+      expect(response).toBeDefined();
+
+      console.log('client-side stream');
+
+      response.on('metadata', (metadata) => {
+        console.log('client metadata', metadata)
+      });
+
+      response.on('data', (data) => {
+        console.log('client data', data);
+      });
+
+      response.on('error', (err) => {
+        console.log('client error', err);
+        done();
+      });
+
+      response.on('end', () => {
+        console.log('client end');
+        done();
+      })
+
+    });
+
+    it('client error', (done) => {
+      engine.addService(EchoService, testRoot);
+      engine.start();
+
+      const client = new EchoServiceClient(engine.port);
+      client.echoError('Error').then(result => {
+        expect(result).toBeUndefined();
+        done();
+      }).catch(err => {
+        expect(err).toBeDefined();
+        expect(err.message).toEqual('not allowed');
+        done();
+      });
+    });
+
+    it('echo stream', (done) => {
+
+      engine.addService(EchoService, testRoot);
+      engine.start();
 
       let count = 10;
       const client = new EchoServiceClient(engine.port);

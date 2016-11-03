@@ -2,7 +2,8 @@ import {
   decorateClassMethod, decorateClass,
   IAttribute, IInterceptor, IInvocation, AgentAttribute
 } from 'agentframework';
-import { Stream } from 'stream';
+import * as grpc from 'grpc-typed';
+import { Readable } from 'stream';
 
 /**
  * an methodstorage.service.ts
@@ -21,7 +22,7 @@ export function implementation() {
 /**
  * Interceptor for service calls
  */
-class ServiceAttribute implements IAttribute, IInterceptor {
+export class ServiceAttribute implements IAttribute, IInterceptor {
 
   getInterceptor(): IInterceptor {
     return this;
@@ -33,32 +34,37 @@ class ServiceAttribute implements IAttribute, IInterceptor {
     const call = parameters[0];
     const expandedParameters = Object.getOwnPropertyNames(call.request).map(name => call.request[name]);
     expandedParameters.push(call.metadata);
-    const res = invocation.invoke(expandedParameters);
+    const response = invocation.invoke(expandedParameters);
 
     if (parameters.length === 1) {
-      if (res instanceof Stream || res.pipe) {
-        const stream = res as Stream;
-        stream.pipe(call);
+      if (response instanceof Readable) {
+        const responseStream = response as Readable;
+        responseStream.pipe(call);
       }
       else {
-        throw new TypeError('Implementation must return a Stream');
+        const md = new grpc.Metadata();
+        md.add('code', '500');
+        md.add('message', 'Server Error');
+        call.sendMetadata(md);
+        call.end();
+        console.log('server side end');
       }
     }
     else if (parameters.length === 2) {
-      if (res instanceof Promise || (res.then && res.catch)) {
-        const sendUnaryData = parameters[1];
-        res.then(result => {
+      const sendUnaryData = parameters[1];
+      if (response instanceof Promise) {
+        response.then(result => {
           sendUnaryData(null, result);
         }).catch(err => {
-          sendUnaryData(err, null);
+          sendUnaryData(err);
         })
       }
       else {
-        throw new TypeError('Implementation must return a Promise');
+        sendUnaryData(new TypeError('Implementation must return a Promise'));
       }
     }
 
     // not used by grpc, for unit test code which run locally.
-    return res;
+    return response;
   }
 }

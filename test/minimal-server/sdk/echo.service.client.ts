@@ -11,6 +11,11 @@ export class EchoServiceClient extends ServiceClient implements IEchoService {
     throw new TypeError('Missing client decorator');
   }
 
+  @method('content')
+  public echoError(content: string): Promise<string> {
+    throw new TypeError('Missing client decorator');
+  }
+
   @method()
   public echoStream(content: string): Stream {
     throw new TypeError('Missing client decorator');

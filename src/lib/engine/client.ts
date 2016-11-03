@@ -65,7 +65,7 @@ export function timeout(timeout: number) {
 
 export class TimeoutAttribute implements IAttribute, IInterceptor {
 
-  constructor(private _timeout: number = 30000) {
+  constructor(private _timeout: number) {
   }
 
   get timeout(): number {
@@ -78,7 +78,7 @@ export class TimeoutAttribute implements IAttribute, IInterceptor {
 
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
     const agent = invocation.invoke(parameters);
-    Reflect.set(agent, TIMEOUT_PROPERTY_KEY, this._timeout);
+    Reflect.set(agent, TIMEOUT_PROPERTY_KEY, this.timeout);
     return agent;
   }
 }
