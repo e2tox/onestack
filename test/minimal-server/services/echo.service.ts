@@ -4,7 +4,7 @@ import { IEchoService, IEachStreamResponseService, IEachRequestStreamService } f
 
 @service('onestack.test.services.EchoService')
 export class EchoService implements IEchoService, IEachRequestStreamService, IEachStreamResponseService {
-
+  
   @implementation()
   public echo(content: string): Promise<string> {
     return new Promise((resolve) => {

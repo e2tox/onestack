@@ -15,6 +15,12 @@
 //   global[key] = new Kernel<T>(); // Object.freeze(kernel); - this will break istanbul test
 // }
 
+// 3.1 Kernel
 export { Kernel, IKernelSettings } from './kernel'
-export { Engine, IEngineSettings } from './engine'
 export { ILogger, LogLevel, LoggerOptions, Serializers, Stream } from './log'
+
+// 3.2 Engine
+export { Engine, IEngineSettings } from './engine'
+export { ServiceClient, client, timeout, method } from './engine/client'
+export { service, implementation } from './engine/service'
+export { Metadata } from 'grpc-typed';
