@@ -8,14 +8,14 @@ import { Echo3Service } from './services/echo3.service';
 import { PassThrough } from 'stream';
 
 describe('echo service', () => {
-  
+
   let testRoot: string;
-  
+
   beforeAll(() => {
     // resolve from process.cwd()
     testRoot = path.resolve('test/minimal-server');
   });
-  
+
   // describe('engine', () => {
   //
   //   let engine: Engine<IEngineSettings>;
@@ -34,29 +34,29 @@ describe('echo service', () => {
   //     expect(() => {
   //       engine.addService(Echo2Service, testRoot);
   //     }).toThrowError(`Service '${echoServiceNs}.Echo2Service' not found in protocol file: ` +
-  //       `'${testRoot}/protos/${echoServiceNs}.proto'`);
+  //     `'${testRoot}/protos/${echoServiceNs}.proto'`);
   //   });
   //
   // });
-  
+
   describe('client', () => {
-    
+
     let originalTimeout;
     let engine: Engine<IEngineSettings>;
-    
+
     beforeEach(() => {
       originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
       engine = new Engine({ root: testRoot });
     });
-    
+
     afterEach(() => {
       engine.stop();
       engine.dispose(true);
       engine = null;
       jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
-    
+
     // it('server promise error', (done) => {
     //   engine.addService(Echo3Service, testRoot);
     //   engine.start();
@@ -147,34 +147,34 @@ describe('echo service', () => {
     //   });
     //
     // });
-    
+
     it('echo client stream', (done) => {
-      
+
       engine.addService(EchoService, testRoot);
       engine.start();
-      
+
       const client = new EchoServiceClient(engine.port);
       client.metadata.add('displayName', 'Ling Zhang');
-      
+
       const transport = new PassThrough({ objectMode: true });
-  
+
       for (let n1 = 1; n1 < 10; n1++) {
         transport.write({ content: `Pre cached Stream ${n1}` });
       }
-      
-      client.echoClientStream(transport).then((result)=> {
+
+      client.echoClientStream(transport).then((result) => {
         console.log('client stream result', result);
         done();
-      }).catch(err=> {
+      }).catch(err => {
         console.log('client stream error', err);
         done();
       });
-      
+
       for (let n2 = 10; n2 < 20; n2++) {
         transport.write({ content: `After Client Stream ${n2}` });
       }
       transport.end();
     });
   });
-  
+
 });

@@ -23,21 +23,27 @@ export function implementation() {
  * Interceptor for service calls
  */
 export class ServiceAttribute implements IAttribute, IInterceptor {
-
+  
   getInterceptor(): IInterceptor {
     return this;
   }
-
+  
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-
-    console.log('CS', parameters);
     
     // make parameters more friendly
     const call = parameters[0];
-    const expandedParameters = Object.getOwnPropertyNames(call.request).map(name => call.request[name]);
+    const expandedParameters = [];
+    
+    if (call.request) {
+      Object.getOwnPropertyNames(call.request).forEach(name => expandedParameters.push(call.request[name]));
+    }
+    else {
+      expandedParameters.push(call);
+    }
     expandedParameters.push(call.metadata);
+    
     const response = invocation.invoke(expandedParameters);
-
+    
     if (parameters.length === 1) {
       if (response instanceof Readable) {
         const responseStream = response as Readable;
@@ -56,6 +62,9 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
         response.then(result => {
           sendUnaryData(null, result);
         }).catch(err => {
+          console.log('sending error to client', err);
+          // hacking inner logic to send error if previous sendUnaryData got error;
+          call.call.metadataSent = false;
           sendUnaryData(err);
         })
       }
@@ -63,7 +72,7 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
         sendUnaryData(new TypeError('Implementation must return a Promise'));
       }
     }
-
+    
     // not used by grpc, for unit test code which run locally.
     return response;
   }

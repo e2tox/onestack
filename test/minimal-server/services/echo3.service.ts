@@ -21,7 +21,7 @@ export class Echo3Service implements IEchoService {
   public echoStream(content: string): Stream {
     return null;
   }
-  
 
-  
+
+
 }
