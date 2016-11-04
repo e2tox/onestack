@@ -170,6 +170,25 @@ export class MethodAttribute implements IAttribute, IInterceptor {
     return promise;
   }
   
+  handleBidiStreamRequest(client, targetFunction, metadata, options, invocation, parameters) {
+    
+    const incomingStream = parameters[0] as Readable;
+    
+    let callback;
+    const promise = new Promise(function (resolve, reject) {
+      callback = function callback2promise(err, value) {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(value);
+      }
+    });
+    
+    const outgoingStream = Reflect.apply(targetFunction, client, [metadata, options, callback]);
+    incomingStream.pipe(outgoingStream);
+    
+    return promise;
+  }
   
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
     
@@ -191,8 +210,9 @@ export class MethodAttribute implements IAttribute, IInterceptor {
       case 'makeClientStreamRequest':
         return this.handleClientStreamRequest(client, targetFunction, metadata, options, invocation, parameters);
       case 'makeBidiStreamRequest':
+        return this.handleBidiStreamRequest(client, targetFunction, metadata, options, invocation, parameters);
       default:
-        throw new TypeError('Not Supported Method');
+        throw new TypeError(`Not Supported Service Implementation: ${targetFunction.name}`);
     }
   }
 }

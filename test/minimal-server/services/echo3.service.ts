@@ -1,9 +1,9 @@
 import { Stream } from 'stream';
 import { service, implementation } from '../../../src/lib/engine/service';
-import { IEchoService } from '../sdk/echo.service';
+import { IEchoService, IEachRequestStreamService } from '../sdk/echo.service';
 
 @service('onestack.test.services.EchoService')
-export class Echo3Service implements IEchoService {
+export class Echo3Service implements IEchoService, IEachRequestStreamService {
 
   @implementation()
   public echo(content: string): Promise<string> {
