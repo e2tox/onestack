@@ -1,6 +1,6 @@
 {
   "name": "onestack",
-  "version": "3.2.8",
+  "version": "3.2.10",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -14,10 +14,8 @@
   ],
   "author": "Ling Zhang",
   "license": "Apache-2.0",
-  "peerDependencies": {
-    "agentframework": "~0"
-  },
   "dependencies": {
+    "agentframework": "latest",
     "bunyan": "latest",
     "js-yaml": "latest",
     "mv": "~2"
