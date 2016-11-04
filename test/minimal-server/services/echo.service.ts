@@ -50,8 +50,8 @@ export class EchoService implements IEchoService, IEachRequestStreamService, IEa
       // resolve promise
       stream.on('end', () => {
         console.log('server got end');
-        resolve(bag);
-        // resolve(`got ${bag.length} items`);
+        // resolve(bag);
+        resolve(`got ${bag.length} items`);
       });
 
     });

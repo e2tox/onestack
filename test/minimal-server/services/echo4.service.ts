@@ -13,24 +13,24 @@ export class Echo4Service implements IEachBidiStreamService {
 
     const duplex = stream as Duplex;
 
-    // let echoStream = new PassThrough({ objectMode: true });
+    let echoStream = new PassThrough({ objectMode: true });
 
     duplex.on('error', (err) => {
-      duplex.emit('error', err);
+      echoStream.emit('error', err);
     });
 
     duplex.on('data', (data) => {
       console.log('server got => ', data);
-      duplex.write({ content: JSON.stringify(data) });
+      echoStream.write({ content: JSON.stringify(data) });
     });
 
     // resolve promise
     duplex.on('end', () => {
       console.log('server got end');
-      duplex.end();
+      echoStream.end();
     });
 
-    return duplex;
+    return echoStream;
   }
 
 }

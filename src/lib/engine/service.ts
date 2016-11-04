@@ -59,7 +59,7 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
         call.end();
       }
     }
-    else if (parameters.length === 2) {
+    else {
       const sendUnaryData = parameters[1];
       if (response instanceof Promise) {
         response.then(result => {

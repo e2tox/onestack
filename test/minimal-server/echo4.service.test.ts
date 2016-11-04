@@ -1,13 +1,10 @@
 import { EchoServiceClient } from './sdk/echo.service.client';
 import { Engine } from '../../src/lib/engine';
 import { IEngineSettings } from '../../src/lib/engineSettings';
-import { EchoService } from './services/echo.service';
 import * as path from 'path';
-import { Echo2Service } from './services/echo2.service';
-import { Echo3Service } from './services/echo3.service';
-import { PassThrough } from 'stream';
 import { Echo4Service } from './services/echo4.service';
 import { Duplex } from 'stream';
+import { PassThrough } from 'stream';
 
 describe('echo4 service', () => {
 
@@ -36,19 +33,19 @@ describe('echo4 service', () => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it('echo client stream', (done) => {
+    it('echo client stream using another stream', (done) => {
 
       engine.addService(Echo4Service, testRoot);
       engine.start();
 
       const client = new EchoServiceClient(engine.port);
-
       const req = new PassThrough({ objectMode: true });
 
-      for (let n1 = 1; n1 < 10; n1++) {
-        req.write({ content: `Pre cached Stream ${n1}` });
+      for (let n2 = 10; n2 < 20; n2++) {
+        req.write({ content: `Client Stream ${n2}` });
       }
 
+      req.end();
 
       const res = client.echoBidiStream(req) as Duplex;
       // console.log('set max to 12')
@@ -63,11 +60,33 @@ describe('echo4 service', () => {
         done();
       });
 
+    });
+
+    it('echo client stream using another stream', (done) => {
+
+      engine.addService(Echo4Service, testRoot);
+      engine.start();
+
+      const client = new EchoServiceClient(engine.port);
+
+      const res = client.echoBidiStream(undefined) as Duplex;
+      // console.log('set max to 12')
+      // stream.setMaxListeners(12);
+
+      res.on('data', function (res: any) {
+        console.log('client stream', res);
+      });
+
+      res.on('end', function () {
+        console.log('client stream end');
+        done();
+      });
+
       for (let n2 = 10; n2 < 20; n2++) {
-        req.write({ content: `After Client Stream ${n2}` });
+        res.write({ content: `After Client Stream ${n2}` });
       }
 
-      req.end();
+      res.end();
 
     });
   });

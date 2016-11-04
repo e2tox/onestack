@@ -101,6 +101,9 @@ export class Engine<T extends IEngineSettings> extends Kernel<T> implements IDis
   }
 
   public dispose(disposing: boolean): void {
+    if (!this._server) {
+      return;
+    }
     this._server.forceShutdown();
     this._server = null;
     this._services.clear();

@@ -22,7 +22,7 @@ export class ExceptionHandler implements IDisposable {
   private processEvents: any;
   private engineEvents: any;
 
-  constructor(private _engine: Engine<IEngineSettings>) {
+  constructor(private engine: Engine<IEngineSettings>) {
 
     this.processEvents = {
       'uncaughtException': this.handleUncaughtException(this),
@@ -45,7 +45,7 @@ export class ExceptionHandler implements IDisposable {
     });
 
     Object.keys(this.engineEvents).forEach(key => {
-      _engine.on(key, this.engineEvents[key]);
+      engine.on(key, this.engineEvents[key]);
     });
 
   }
@@ -55,10 +55,10 @@ export class ExceptionHandler implements IDisposable {
     Object.keys(this.processEvents).forEach(key => {
       process.removeListener(key, this.processEvents[key]);
     });
-    this._engine.removeAllListeners();
+    this.engine.removeAllListeners();
     this.processEvents = null;
     this.engineEvents = null;
-    this._engine = null;
+    this.engine = null;
 
     this['_id'] = Date.now();
 
@@ -72,55 +72,56 @@ export class ExceptionHandler implements IDisposable {
       // provide friendly message
       if (err.code === 'EACCES') {
         const fatal = new Fatal('Please run with sudo', err);
-        handler._engine.emit('fatal', fatal);
+        handler.engine.emit('fatal', fatal);
       }
       else if (err.code === 'EADDRINUSE') {
-        const fatal = new Fatal(`Engine cannot be started. Port '${handler._engine.port}' is occupied`, err);
-        handler._engine.emit('fatal', fatal);
+        const fatal = new Fatal(`Engine cannot be started. Port '${handler.engine.port}' is occupied`, err);
+        handler.engine.emit('fatal', fatal);
       }
       else {
         console.error('catch err', err);
-        handler._engine.emit('error', err);
+        handler.engine.emit('error', err);
       }
     }
   }
 
   private handleFatalException(handler) {
     return function (err: Fatal) {
-      handler._engine.logger.fatal(err);
+      handler.engine.logger.fatal(err);
       handler.gracefullyShutdown();
     }
   }
 
   private handleError(handler) {
     return function (err: Error) {
-      handler._engine.logger.error(err);
+      handler.engine.logger.error(err);
     }
   }
 
   private handleWarning(handler) {
     return function (warning: Error) {
-      handler._engine.logger.warn(warning)
+      handler.engine.logger.warn(warning)
     }
   }
 
   private gracefullyShutdown(handler) {
     return function () {
-      handler._engine.stop(() => {
+      handler.engine.stop(() => {
         const exit = setTimeout(() => {
           console.log('INFO: Engine was shut down gracefully');
           process.exit(0);
         }, 10000);
         exit.unref();
       });
-      handler._engine.dispose(false);
+      handler.engine.dispose(false);
     }
   }
 
   private exit(handler) {
     return function () {
       console.log('WARN: Engine is going to exit');
-      handler._engine.forceStop();
+      handler.engine.forceStop();
+      handler.engine.dispose(false);
     }
   }
 

@@ -108,6 +108,7 @@ export class MethodAttribute implements IAttribute, IInterceptor {
 
     const parameterNames = !this._params.length ? ParseFunctionArguments(invocation.method) : this._params;
     const innerParameter = {};
+
     // convert method parameter to object
     Array.from(parameters).map((v, k) => {
       innerParameter[parameterNames[k]] = v;
@@ -155,20 +156,22 @@ export class MethodAttribute implements IAttribute, IInterceptor {
 
     const incomingStream = parameters[0] as Readable;
 
-    let callback;
-    const promise = new Promise(function (resolve, reject) {
-      callback = function callback2promise(err, value) {
-        if (err) {
-          return reject(err);
+    if (incomingStream instanceof Readable) {
+      return new Promise(function (resolve, reject) {
+        function callback2promise(err, value) {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(value);
         }
-        return resolve(value);
-      }
-    });
+        const outgoingStream = Reflect.apply(targetFunction, client, [metadata, options, callback2promise]);
+        incomingStream.pipe(outgoingStream);
+      });
+    }
+    else {
+      throw new TypeError(`Argument ${incomingStream} is not readable stream`);
+    }
 
-    const outgoingStream = Reflect.apply(targetFunction, client, [metadata, options, callback]);
-    incomingStream.pipe(outgoingStream);
-
-    return promise;
   }
 
   /**
@@ -176,11 +179,11 @@ export class MethodAttribute implements IAttribute, IInterceptor {
    */
   handleBidiStreamRequest(client, targetFunction, metadata, options, invocation, parameters) {
 
-    const incomingStream = parameters.length ? parameters[0] as Readable : null;
+    const incomingStream = parameters[0] || null;
 
     const duplexStream = Reflect.apply(targetFunction, client, [metadata, options]);
 
-    if (incomingStream != null) {
+    if (incomingStream instanceof Readable) {
       incomingStream.pipe(duplexStream);
     }
 
@@ -212,6 +215,7 @@ export class MethodAttribute implements IAttribute, IInterceptor {
       case 'makeBidiStreamRequest':
         return this.handleBidiStreamRequest(client, targetFunction, metadata, options, invocation, parameters);
       default:
+        // in case of google made breaking changes
         throw new TypeError(`Not Supported Request: ${targetFunction.name}`);
     }
   }

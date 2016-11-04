@@ -7,7 +7,7 @@ import { Stream } from 'stream';
 
 @client('onestack.test.services.EchoService')
 @timeout(10000)
-export class EchoServiceClient extends ServiceClient implements IEchoService,
+export class Echo2ServiceClient extends ServiceClient implements IEchoService,
   IEachRequestStreamService, IEachStreamResponseService, IEachBidiStreamService {
 
   @method()
@@ -20,7 +20,7 @@ export class EchoServiceClient extends ServiceClient implements IEchoService,
     throw new TypeError('Missing client decorator');
   }
 
-  @method()
+  @method('content')
   public echoStream(content: string): Stream {
     throw new TypeError('Missing client decorator');
   }
