@@ -31,7 +31,35 @@ export class EchoService implements IEchoService {
     });
     return echoStream;
   }
-
+  
+  @implementation()
+  public echoClientStream(stream: Stream): Promise<string> {
+    
+    const bag = [];
+    let callback = null;
+    
+    const promise = new Promise((resolve, reject) => {
+      callback = function(err, result) {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(result);
+        }
+      };
+    });
+    
+    stream.on('data', (data) => {
+      bag.push(data);
+    });
+    
+    // resolve promise
+    stream.on('end', ()=> {
+      callback(null, bag)
+    });
+    
+    return promise;
+  }
 }
 
 // import * as fs from 'fs'

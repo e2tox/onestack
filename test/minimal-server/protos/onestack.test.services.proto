@@ -6,6 +6,7 @@ service EchoService {
   rpc echo(Message) returns (Message) {}
   rpc echoError(Message) returns (Message) {}
   rpc echoStream(Message) returns (stream Message) {}
+  rpc echoClientStream(stream Message) returns (Message) {}
 }
 
 message Message {

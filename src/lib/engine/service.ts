@@ -30,6 +30,8 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
 
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
 
+    console.log('CS', parameters);
+    
     // make parameters more friendly
     const call = parameters[0];
     const expandedParameters = Object.getOwnPropertyNames(call.request).map(name => call.request[name]);
@@ -43,11 +45,9 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
       }
       else {
         const md = new grpc.Metadata();
-        md.add('code', '500');
-        md.add('message', 'Server Error');
+        md.add('error', JSON.stringify(new TypeError('Implementation must return a Stream')));
         call.sendMetadata(md);
         call.end();
-        console.log('server side end');
       }
     }
     else if (parameters.length === 2) {

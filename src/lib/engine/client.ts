@@ -98,13 +98,39 @@ export class MethodAttribute implements IAttribute, IInterceptor {
   getInterceptor(): IInterceptor {
     return this;
   }
+  
+  
+  
 
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
 
+    let methodType = null;
+    
+    
     const client = Reflect.get(invocation.target, CLIENT_PROPERTY_KEY);
     const timeout = Reflect.get(invocation.target, TIMEOUT_PROPERTY_KEY) as number;
     const metadata = Reflect.get(invocation.target, METADATA_PROPERTY_KEY) as Metadata;
     const targetFunction = Reflect.get(client, invocation.method.name);
+    
+    switch(targetFunction.name) {
+      case 'makeUnaryRequest':
+        methodType = 'unary';
+        break;
+      case 'makeClientStreamRequest':
+        methodType = 'client_stream';
+        break;
+      case 'makeServerStreamRequest':
+        methodType = 'server_stream';
+        break;
+      case 'makeBidiStreamRequest':
+        methodType = 'bidi';
+        break;
+      default:
+        throw new TypeError('Not Supported Version');
+    }
+    
+    console.log('CS1', parameters);
+    
     // in current release of gRPC. targetFunction.length === 3 mean reply stream response
     // and length === 4 means reply Promise
     const shouldReplyPromise = targetFunction.length === 4;
