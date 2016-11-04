@@ -63,16 +63,16 @@ describe('exception', () => {
     expect(engine).toBeDefined();
   });
 
-  it('process exit', () => {
-    const err = new Error('test process exit');
-    process.emit('exit', err);
-    expect(engine).toBeDefined();
-  });
+  // it('process exit', () => {
+  //   const err = new Error('test process exit');
+  //   process.emit('exit', err);
+  //   expect(engine).toBeDefined();
+  // });
 
-  it('process SIGTERM', () => {
-    const err = new Error('test process SIGTERM');
-    process.emit('SIGTERM', err);
-    expect(engine).toBeDefined();
-  });
+  // it('process SIGTERM', () => {
+  //   const err = new Error('test process SIGTERM');
+  //   process.emit('SIGTERM', err);
+  //   expect(engine).toBeDefined();
+  // });
 
 });
