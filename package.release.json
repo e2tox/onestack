@@ -1,6 +1,6 @@
 {
   "name": "onestack",
-  "version": "3.2.10",
+  "version": "3.2.12",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -17,6 +17,8 @@
   "dependencies": {
     "agentframework": "latest",
     "bunyan": "latest",
+    "callsite": "latest",
+    "grpc-typed": "latest",
     "js-yaml": "latest",
     "mv": "~2"
   }
