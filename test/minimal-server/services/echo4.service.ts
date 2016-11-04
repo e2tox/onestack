@@ -1,30 +1,36 @@
 import { Stream, PassThrough } from 'stream';
 import { service, implementation } from '../../../src/lib/engine/service';
 import { IEachBidiStreamService } from '../sdk/echo.service';
+import { Duplex } from 'stream';
 
 @service('onestack.test.services.EchoService')
 export class Echo4Service implements IEachBidiStreamService {
-  
+
   @implementation()
   public echoBidiStream(stream: Stream): Stream {
-    
-    let echoStream = new PassThrough({ objectMode: true });
-    
-    stream.on('error', (err)=> {
-      echoStream.emit('error', err);
+
+    // console.log('got stream', stream);
+
+    const duplex = stream as Duplex;
+
+    // let echoStream = new PassThrough({ objectMode: true });
+
+    duplex.on('error', (err) => {
+      duplex.emit('error', err);
     });
-    
-    stream.on('data', (data) => {
-      console.log('server got', data);
-      echoStream.write({ content: JSON.stringify(data) });
+
+    duplex.on('data', (data) => {
+      console.log('server got => ', data);
+      duplex.write({ content: JSON.stringify(data) });
     });
-    
+
     // resolve promise
-    stream.on('end', () => {
+    duplex.on('end', () => {
       console.log('server got end');
-      echoStream.end();
+      duplex.end();
     });
-    
-    return echoStream;
+
+    return duplex;
   }
+
 }

@@ -16,28 +16,28 @@ describe('echo service', () => {
     testRoot = path.resolve('test/minimal-server');
   });
 
-  // describe('engine', () => {
-  //
-  //   let engine: Engine<IEngineSettings>;
-  //   const echoServiceNs = 'onestack.test.services';
-  //
-  //   beforeEach(() => {
-  //     engine = new Engine({ root: testRoot });
-  //   });
-  //
-  //   afterEach(() => {
-  //     engine.dispose(true);
-  //     engine = null;
-  //   });
-  //
-  //   it('add non-exists service', () => {
-  //     expect(() => {
-  //       engine.addService(Echo2Service, testRoot);
-  //     }).toThrowError(`Service '${echoServiceNs}.Echo2Service' not found in protocol file: ` +
-  //     `'${testRoot}/protos/${echoServiceNs}.proto'`);
-  //   });
-  //
-  // });
+  describe('engine', () => {
+
+    let engine: Engine<IEngineSettings>;
+    const echoServiceNs = 'onestack.test.services';
+
+    beforeEach(() => {
+      engine = new Engine({ root: testRoot });
+    });
+
+    afterEach(() => {
+      engine.dispose(true);
+      engine = null;
+    });
+
+    it('add non-exists service', () => {
+      expect(() => {
+        engine.addService(Echo2Service, testRoot);
+      }).toThrowError(`Service '${echoServiceNs}.Echo2Service' not found in protocol file: ` +
+      `'${testRoot}/protos/${echoServiceNs}.proto'`);
+    });
+
+  });
 
   describe('client', () => {
 
@@ -57,96 +57,96 @@ describe('echo service', () => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    // it('server promise error', (done) => {
-    //   engine.addService(Echo3Service, testRoot);
-    //   engine.start();
-    //   const client = new EchoServiceClient(engine.port);
-    //   client.echo('promise should error').then(result => {
-    //     expect(result).toBeUndefined();
-    //     done();
-    //   }).catch(err => {
-    //     expect(err).toBeDefined();
-    //     expect(err.message).toEqual('Implementation must return a Promise');
-    //     console.log(err.stack);
-    //     done();
-    //   });
-    // });
-    //
-    // it('server stream error', (done) => {
-    //   engine.addService(Echo3Service, testRoot);
-    //   engine.start();
-    //   const client = new EchoServiceClient(engine.port);
-    //   const response = client.echoStream('get error');
-    //
-    //   expect(response).toBeDefined();
-    //
-    //   // optional
-    //   response.on('metadata', (metadata) => {
-    //     console.log('client metadata', metadata)
-    //   });
-    //   // optional
-    //   response.on('error', (err) => {
-    //     console.log('client error', err);
-    //     done();
-    //   });
-    //   // must:  NOTE: this is the must-have event listener for stream response
-    //   response.on('data', (data) => {
-    //     console.log('client data', data);
-    //   });
-    //   // must
-    //   response.on('end', () => {
-    //     console.log('client end');
-    //     done();
-    //   })
-    // });
-    //
-    // it('client error', (done) => {
-    //   engine.addService(EchoService, testRoot);
-    //   engine.start();
-    //
-    //   const client = new EchoServiceClient(engine.port);
-    //   client.echoError('Error').then(result => {
-    //     expect(result).toBeUndefined();
-    //     done();
-    //   }).catch(err => {
-    //     expect(err).toBeDefined();
-    //     expect(err.message).toEqual('not allowed');
-    //     done();
-    //   });
-    // });
-    //
-    // it('echo server stream', (done) => {
-    //
-    //   engine.addService(EchoService, testRoot);
-    //   engine.start();
-    //
-    //   let count = 10;
-    //   const client = new EchoServiceClient(engine.port);
-    //   client.metadata.add('displayName', 'Ling Zhang');
-    //
-    //   const stream = client.echoStream('Ling');
-    //   // console.log('set max to 12')
-    //   // stream.setMaxListeners(12);
-    //
-    //   stream.on('data', function (res: any) {
-    //
-    //     console.log('stream', res);
-    //     // call remote service with promise
-    //     client.echo(`What? ${res.content}`).then(result => {
-    //       console.log('echo', result);
-    //       if (!--count) {
-    //         done();
-    //       }
-    //     }).catch(err => {
-    //       console.log('promise error', err);
-    //     });
-    //   });
-    //
-    //   stream.on('end', function () {
-    //     console.log('stream end');
-    //   });
-    //
-    // });
+    it('server promise error', (done) => {
+      engine.addService(Echo3Service, testRoot);
+      engine.start();
+      const client = new EchoServiceClient(engine.port);
+      client.echo('promise should error').then(result => {
+        expect(result).toBeUndefined();
+        done();
+      }).catch(err => {
+        expect(err).toBeDefined();
+        expect(err.message).toEqual('Implementation must return a Promise');
+        console.log(err.stack);
+        done();
+      });
+    });
+
+    it('server stream error', (done) => {
+      engine.addService(Echo3Service, testRoot);
+      engine.start();
+      const client = new EchoServiceClient(engine.port);
+      const response = client.echoStream('get error');
+
+      expect(response).toBeDefined();
+
+      // optional
+      response.on('metadata', (metadata) => {
+        console.log('client metadata', metadata)
+      });
+      // optional
+      response.on('error', (err) => {
+        console.log('client error', err);
+        done();
+      });
+      // must:  NOTE: this is the must-have event listener for stream response
+      response.on('data', (data) => {
+        console.log('client data', data);
+      });
+      // must
+      response.on('end', () => {
+        console.log('client end');
+        done();
+      })
+    });
+
+    it('client error', (done) => {
+      engine.addService(EchoService, testRoot);
+      engine.start();
+
+      const client = new EchoServiceClient(engine.port);
+      client.echoError('Error').then(result => {
+        expect(result).toBeUndefined();
+        done();
+      }).catch(err => {
+        expect(err).toBeDefined();
+        expect(err.message).toEqual('not allowed');
+        done();
+      });
+    });
+
+    it('echo server stream', (done) => {
+
+      engine.addService(EchoService, testRoot);
+      engine.start();
+
+      let count = 10;
+      const client = new EchoServiceClient(engine.port);
+      client.metadata.add('displayName', 'Ling Zhang');
+
+      const stream = client.echoStream('Ling');
+      // console.log('set max to 12')
+      // stream.setMaxListeners(12);
+
+      stream.on('data', function (res: any) {
+
+        console.log('stream', res);
+        // call remote service with promise
+        client.echo(`What? ${res.content}`).then(result => {
+          console.log('echo', result);
+          if (!--count) {
+            done();
+          }
+        }).catch(err => {
+          console.log('promise error', err);
+        });
+      });
+
+      stream.on('end', function () {
+        console.log('stream end');
+      });
+
+    });
 
     it('echo client stream', (done) => {
 

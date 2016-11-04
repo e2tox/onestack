@@ -7,6 +7,7 @@ import { Echo2Service } from './services/echo2.service';
 import { Echo3Service } from './services/echo3.service';
 import { PassThrough } from 'stream';
 import { Echo4Service } from './services/echo4.service';
+import { Duplex } from 'stream';
 
 describe('echo4 service', () => {
 
@@ -47,25 +48,27 @@ describe('echo4 service', () => {
       for (let n1 = 1; n1 < 10; n1++) {
         req.write({ content: `Pre cached Stream ${n1}` });
       }
-      
-      const res = client.echoBidiStream(req);
-        // console.log('set max to 12')
-        // stream.setMaxListeners(12);
 
-        res.on('data', function (res: any) {
-          console.log('client stream', res);
-        });
 
-        res.on('end', function () {
-          console.log('client stream end');
-          done();
-        });
-      
+      const res = client.echoBidiStream(req) as Duplex;
+      // console.log('set max to 12')
+      // stream.setMaxListeners(12);
+
+      res.on('data', function (res: any) {
+        console.log('client stream', res);
+      });
+
+      res.on('end', function () {
+        console.log('client stream end');
+        done();
+      });
+
       for (let n2 = 10; n2 < 20; n2++) {
         req.write({ content: `After Client Stream ${n2}` });
       }
-      
+
       req.end();
+
     });
   });
 

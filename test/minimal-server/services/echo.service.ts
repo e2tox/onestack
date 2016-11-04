@@ -35,25 +35,25 @@ export class EchoService implements IEchoService, IEachRequestStreamService, IEa
   @implementation()
   public echoClientStream(stream: Stream): Promise<string> {
     return new Promise((resolve, reject) => {
-  
+
       const bag = [];
-      
-      stream.on('error', (err)=> {
+
+      stream.on('error', (err) => {
         reject(err);
       });
-      
+
       stream.on('data', (data) => {
         console.log('server got', data);
         bag.push(data);
       });
-  
+
       // resolve promise
       stream.on('end', () => {
         console.log('server got end');
         resolve(bag);
         // resolve(`got ${bag.length} items`);
       });
-      
+
     });
   }
 }

@@ -2048,8 +2048,8 @@ repeating@^2.0.0:
     is-finite "^1.0.0"
 
 request@^2.75.0:
-  version "2.77.0"
-  resolved "https://registry.yarnpkg.com/request/-/request-2.77.0.tgz#2b00d82030ededcc97089ffa5d8810a9c2aa314b"
+  version "2.78.0"
+  resolved "https://registry.yarnpkg.com/request/-/request-2.78.0.tgz#e1c8dec346e1c81923b24acdb337f11decabe9cc"
   dependencies:
     aws-sign2 "~0.6.0"
     aws4 "^1.2.1"
@@ -2379,8 +2379,8 @@ typescript-standard@latest:
     typescript latest
 
 typescript@latest:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.0.6.tgz#5385499ac9811508c2c43e0ea07a1ddca435e111"
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.0.7.tgz#efc39e8822e240d0b741d06ff86708137bcdb5e4"
 
 uglify-js@^2.6, uglify-js@~2.7.3:
   version "2.7.4"

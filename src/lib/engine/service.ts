@@ -6,14 +6,14 @@ import * as grpc from 'grpc-typed';
 import { Readable } from 'stream';
 
 /**
- * an methodstorage.service.ts
+ * a service
  */
 export function service(identifier: string) {
   return decorateClass(new AgentAttribute(identifier));
 }
 
 /**
- * an method
+ * an implementation of service
  */
 export function implementation() {
   return decorateClassMethod(new ServiceAttribute());
@@ -23,17 +23,17 @@ export function implementation() {
  * Interceptor for service calls
  */
 export class ServiceAttribute implements IAttribute, IInterceptor {
-  
+
   getInterceptor(): IInterceptor {
     return this;
   }
-  
+
   intercept(invocation: IInvocation, parameters: ArrayLike<any>): any {
-    
+
     // make parameters more friendly
     const call = parameters[0];
     const expandedParameters = [];
-    
+
     if (call.request) {
       Object.getOwnPropertyNames(call.request).forEach(name => expandedParameters.push(call.request[name]));
     }
@@ -41,17 +41,20 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
       expandedParameters.push(call);
     }
     expandedParameters.push(call.metadata);
-    
+
+    // invoke service implementation
     const response = invocation.invoke(expandedParameters);
-    
+
     if (parameters.length === 1) {
       if (response instanceof Readable) {
         const responseStream = response as Readable;
-        responseStream.pipe(call);
+        if (call !== responseStream) {
+          responseStream.pipe(call);
+        }
       }
       else {
         const md = new grpc.Metadata();
-        md.add('error', JSON.stringify(new TypeError('Implementation must return a Stream')));
+        md.add('error', JSON.stringify(new TypeError('Implementation must return a Readable Stream')));
         call.sendMetadata(md);
         call.end();
       }
@@ -72,7 +75,7 @@ export class ServiceAttribute implements IAttribute, IInterceptor {
         sendUnaryData(new TypeError('Implementation must return a Promise'));
       }
     }
-    
+
     // not used by grpc, for unit test code which run locally.
     return response;
   }
