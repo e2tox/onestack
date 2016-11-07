@@ -19,8 +19,15 @@
 export { Kernel, IKernelSettings } from './kernel'
 export { ILogger, LogLevel, LoggerOptions, Serializers, Stream } from './log'
 
-// 3.2 Engine
+// 3.2 Service Engine
 export { Engine, IEngineSettings } from './engine'
 export { ServiceClient, client, timeout, method } from './engine/client'
 export { service, implementation } from './engine/service'
 export { Metadata } from 'grpc-typed';
+
+// 3.3 More Exports
+export { IKernelOptions } from './kernelOptions'
+export { IDisposable } from './utils/disposable'
+export { parseJSON, parseYAML } from './utils/parser'
+export { File, Directory } from './utils/directory'
+export { IsUndefined } from './utils/utils'
