@@ -1,6 +1,0 @@
----
-HOST: 0.0.0.0
-PORT: 12345
-
-LOG_CONSOLE: true
-LOG_ROTATE: false

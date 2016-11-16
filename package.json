@@ -38,14 +38,11 @@
   "dependencies": {
     "agentframework": "latest",
     "bunyan": "latest",
-    "callsite": "latest",
-    "grpc-typed": "latest",
     "js-yaml": "latest",
     "mv": "~2"
   },
   "devDependencies": {
     "@types/bunyan": "latest",
-    "@types/callsite": "latest",
     "@types/jasmine": "latest",
     "@types/js-yaml": "latest",
     "@types/node": "latest",
